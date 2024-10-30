@@ -1,0 +1,8 @@
+PORT = "4000"
+DB_USERNAME = "testuser"
+DB_PASSWORD = "password"
+DB_HOSE = "localhost:27017"
+APPLICATION_NAME = "sync-workbench"
+DB_CONNECTION_URL = "mongodb://<db_username>:<db_password>@localhost:27017"
+DB_NAME  = "sync-workbench-api"
+ACCESS_TOKEN_SECRET="f405097ecf05fb2fef8ac684c8020ddb3e6657ed79a6258ac8c06adbacc510439f80ccb2bb"

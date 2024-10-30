@@ -1,0 +1,1426 @@
+openapi: 3.0.0
+
+info:
+  version: 1.0.0
+  title: Sync-Workbench API
+  description: >-
+    Sync-Workbench is a powerful workforce management solution designed to streamline and optimize employee operations.
+    This API allows for managing employees, projects, tasks, performance, and more with role-based access control.
+  contact:
+    name: FS Army
+    url: https://fsarmy.com
+    email: support@fsarmy.com
+
+servers:
+  - description: Development Server
+    url: http://localhost:4000/api/v1
+
+tags:
+  - name: Auth
+    description: Authentication Endpoints (public)
+  - name: Employee
+    description: Employee Management Endpoints (admin + HR)
+  - name: Department
+    description: Department Management Endpoints (admin)
+  - name: Role
+    description: Role Management Endpoints (admin)
+  - name: Project
+    description: Project Management Endpoints (admin + managers)
+  - name: Task
+    description: Task Management Endpoints (admin + managers)
+  - name: Attendance
+    description: Attendance Tracking Endpoints (HR + managers)
+  - name: Leave
+    description: Leave Management Endpoints (HR + employees)
+  - name: PerformanceReview
+    description: Performance Review Endpoints (HR + managers)
+  - name: Payroll
+    description: Payroll Management Endpoints (HR + finance)
+  - name: Document
+    description: Document Management Endpoints (HR + employees)
+  - name: Skill
+    description: Skill Management Endpoints (HR + managers)
+  - name: Certification
+    description: Certification Management Endpoints (HR + managers)
+  - name: Team
+    description: Team Management Endpoints (admin + managers)
+
+paths:
+  /auth/register:
+    post:
+      summary: User Registration
+      description: Registers a new user account.
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Login successful
+                  data:
+                    type: object
+                    properties:
+                      accessToken:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                      refreshToken:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        "400":
+          description: Registration failed due to invalid data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: Registration failed
+
+  /auth/login:
+    post:
+      summary: User Login
+      description: Authenticates the user and returns JWT and refresh token.
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: your-username
+                password:
+                  type: string
+                  example: yourpassword
+      responses:
+        "200":
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Login successful
+                  data:
+                    type: object
+                    properties:
+                      accessToken:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                      refreshToken:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: Invalid credentials
+                    additionalProperties: true
+
+  /auth/refresh-token:
+    post:
+      summary: Refresh Access Token
+      description: Returns a new access token using the refresh token.
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      responses:
+        "200":
+          description: Successfully refreshed token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Token refreshed successfully
+                  data:
+                    type: object
+                    properties:
+                      accessToken:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: Invalid refresh token
+                    additionalProperties: true
+
+  /employees:
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get a list of employees"
+      description: "Retrieve a list of employees with pagination, sorting, and populate options."
+      tags: [Employee]
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/sortBy"
+        - $ref: "#/components/parameters/sortType"
+        - $ref: "#/components/parameters/expend"
+      responses:
+        "200":
+          description: "A list of employees"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Successfully retrieved employees."
+                  links:
+                    type: object
+                    additionalProperties: true
+                  pagination:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        description: "Total number of employees."
+                      page:
+                        type: integer
+                        description: "Current page number."
+                      limit:
+                        type: integer
+                        description: "Number of employees per page."
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Employee"
+        "400":
+          description: "Invalid request parameters."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "Invalid parameters."
+                  links:
+                    type: object
+                    additionalProperties: true
+                  data:
+                    type: object
+                    additionalProperties: true
+        "500":
+          description: "Internal server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "Internal server error."
+                  links:
+                    type: object
+                    additionalProperties: true
+                  data:
+                    type: object
+                    additionalProperties: true
+
+    post:
+      summary: "Create a new employee"
+      description: "Add a new employee to the system."
+      tags: ["Employee"]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Employee"
+      responses:
+        "201":
+          description: "Employee created successfully."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                    example: "Employee created successfully."
+                  links:
+                    type: object
+                    additionalProperties: true
+                  data:
+                    $ref: "#/components/schemas/Employee"
+        "400":
+          description: "Invalid input."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "Invalid input."
+                  links:
+                    type: object
+                    additionalProperties: true
+                  data:
+                    type: object
+                    additionalProperties: true
+        "500":
+          description: "Internal server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "Internal server error."
+                  links:
+                    type: object
+                    additionalProperties: true
+                  data:
+                    type: object
+                    additionalProperties: true
+
+  /employees/{id}:
+    get:
+      summary: "Get employee details"
+      description: "Retrieve detailed information for a specific employee."
+      tags: [Employee]
+      parameters:
+        - $ref: "#/components/parameters/id"
+        - $ref: "#/components/parameters/expend"
+      responses:
+        "200":
+          description: "Employee details"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Employee details retrieved successfully."
+                  links:
+                    type: object
+                    additionalProperties: true
+                  data:
+                    $ref: "#/components/schemas/Employee"
+        "404":
+          description: "Employee not found."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 404
+                  message:
+                    type: string
+                    example: "Employee not found."
+                  links:
+                    type: object
+                    additionalProperties: true
+                  data:
+                    type: object
+                    additionalProperties: true
+        "500":
+          description: "Internal server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "Internal server error."
+                  links:
+                    type: object
+                    additionalProperties: true
+                  data:
+                    type: object
+                    additionalProperties: true
+
+    delete:
+      summary: "Delete employee"
+      tags: [Employee]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: Employee deleted successfully
+        "404":
+          description: Employee not found
+
+  /departments:
+    get:
+      tags:
+        - Department
+      summary: Get all departments
+      responses:
+        "200":
+          description: A list of departments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Department"
+
+    post:
+      tags:
+        - Department
+      summary: Create a new department
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Department"
+      responses:
+        "201":
+          description: Department created successfully
+        "400":
+          description: Invalid request
+
+  /departments/{id}:
+    get:
+      tags:
+        - Department
+      summary: Get a department by ID
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Department details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Department"
+        "404":
+          description: Department not found
+
+    put:
+      tags:
+        - Department
+      summary: Update a department
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Department"
+      responses:
+        "200":
+          description: Department updated successfully
+        "400":
+          description: Invalid request
+        "404":
+          description: Department not found
+
+    delete:
+      tags:
+        - Department
+      summary: Delete a department
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: Department deleted successfully
+        "404":
+          description: Department not found
+
+  /roles:
+    get:
+      tags:
+        - Role
+      summary: Get all roles
+      responses:
+        "200":
+          description: A list of roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Role"
+
+    post:
+      tags:
+        - Role
+      summary: Create a new role
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Role"
+      responses:
+        "201":
+          description: Role created successfully
+        "400":
+          description: Invalid request
+
+  /roles/{id}:
+    get:
+      tags:
+        - Role
+      summary: Get a role by ID
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Role details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Role"
+        "404":
+          description: Role not found
+
+    put:
+      tags:
+        - Role
+      summary: Update a role
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Role"
+      responses:
+        "200":
+          description: Role updated successfully
+        "400":
+          description: Invalid request
+        "404":
+          description: Role not found
+
+    delete:
+      tags:
+        - Role
+      summary: Delete a role
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: Role deleted successfully
+        "404":
+          description: Role not found
+
+  /projects:
+    get:
+      tags:
+        - Project
+      summary: Get all projects
+      responses:
+        "200":
+          description: A list of projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+
+    post:
+      tags:
+        - Project
+      summary: Create a new project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Project"
+      responses:
+        "201":
+          description: Project created successfully
+        "400":
+          description: Invalid request
+
+  /projects/{id}:
+    get:
+      tags:
+        - Project
+      summary: Get a project by ID
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Project details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "404":
+          description: Project not found
+
+    put:
+      tags:
+        - Project
+      summary: Update a project
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Project"
+      responses:
+        "200":
+          description: Project updated successfully
+        "400":
+          description: Invalid request
+        "404":
+          description: Project not found
+
+    delete:
+      tags:
+        - Project
+      summary: Delete a project
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: Project deleted successfully
+        "404":
+          description: Project not found
+
+  /tasks:
+    get:
+      tags:
+        - Task
+      summary: Get all tasks
+      responses:
+        "200":
+          description: A list of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+
+    post:
+      tags:
+        - Task
+      summary: Create a new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+      responses:
+        "201":
+          description: Task created successfully
+        "400":
+          description: Invalid request
+
+  /tasks/{id}:
+    get:
+      tags:
+        - Task
+      summary: Get a task by ID
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Task details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: Task not found
+
+    put:
+      tags:
+        - Task
+      summary: Update a task
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+      responses:
+        "200":
+          description: Task updated successfully
+        "400":
+          description: Invalid request
+        "404":
+          description: Task not found
+
+    delete:
+      tags:
+        - Task
+      summary: Delete a task
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: Task deleted successfully
+        "404":
+          description: Task not found
+
+  /attendances:
+    get:
+      tags:
+        - Attendance
+      summary: Get all attendance records
+      responses:
+        "200":
+          description: A list of attendance records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Attendance"
+
+    post:
+      tags:
+        - Attendance
+      summary: Create a new attendance record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Attendance"
+      responses:
+        "201":
+          description: Attendance record created successfully
+        "400":
+          description: Invalid request
+
+  /attendances/{id}:
+    get:
+      tags:
+        - Attendance
+      summary: Get an attendance record by ID
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Attendance record details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Attendance"
+        "404":
+          description: Attendance record not found
+
+    put:
+      tags:
+        - Attendance
+      summary: Update an attendance record
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Attendance"
+      responses:
+        "200":
+          description: Attendance record updated successfully
+        "400":
+          description: Invalid request
+        "404":
+          description: Attendance record not found
+
+    delete:
+      tags:
+        - Attendance
+      summary: Delete an attendance record
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: Attendance record deleted successfully
+        "404":
+          description: Attendance record not found
+
+  /leaves:
+    get:
+      tags:
+        - Leave
+      summary: Get all leave requests
+      responses:
+        "200":
+          description: A list of leave requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Leave"
+
+    post:
+      tags:
+        - Leave
+      summary: Create a new leave request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Leave"
+      responses:
+        "201":
+          description: Leave request created successfully
+        "400":
+          description: Invalid request
+
+  /leaves/{id}:
+    get:
+      tags:
+        - Leave
+      summary: Get a leave request by ID
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Leave request details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Leave"
+        "404":
+          description: Leave request not found
+
+    put:
+      tags:
+        - Leave
+      summary: Update a leave request
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Leave"
+      responses:
+        "200":
+          description: Leave request updated successfully
+        "400":
+          description: Invalid request
+        "404":
+          description: Leave request not found
+
+    delete:
+      tags:
+        - Leave
+      summary: Delete a leave request
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: Leave request deleted successfully
+        "404":
+          description: Leave request not found
+
+  /reviews:
+    get:
+      tags:
+        - Review
+      summary: Get all performance reviews
+      responses:
+        "200":
+          description: A list of performance reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Review"
+
+    post:
+      tags:
+        - Review
+      summary: Create a new performance review
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Review"
+      responses:
+        "201":
+          description: Performance review created successfully
+        "400":
+          description: Invalid request
+
+  /reviews/{id}:
+    get:
+      tags:
+        - Review
+      summary: Get a performance review by ID
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Performance review details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+        "404":
+          description: Performance review not found
+
+    put:
+      tags:
+        - Review
+      summary: Update a performance review
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Review"
+      responses:
+        "200":
+          description: Performance review updated successfully
+        "400":
+          description: Invalid request
+        "404":
+          description: Performance review not found
+
+    delete:
+      tags:
+        - Review
+      summary: Delete a performance review
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: Performance review deleted successfully
+        "404":
+          description: Performance review not found
+
+  /payrolls:
+    get:
+      tags:
+        - Payroll
+      summary: Get all payroll records
+      responses:
+        "200":
+          description: A list of payroll records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Payroll"
+
+    post:
+      tags:
+        - Payroll
+      summary: Create a new payroll record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Payroll"
+      responses:
+        "201":
+          description: Payroll record created successfully
+        "400":
+          description: Invalid request
+
+  /payrolls/{id}:
+    get:
+      tags:
+        - Payroll
+      summary: Get a payroll record by ID
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Payroll record details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payroll"
+        "404":
+          description: Payroll record not found
+
+    put:
+      tags:
+        - Payroll
+      summary: Update a payroll record
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Payroll"
+      responses:
+        "200":
+          description: Payroll record updated successfully
+        "400":
+          description: Invalid request
+        "404":
+          description: Payroll record not found
+
+    delete:
+      tags:
+        - Payroll
+      summary: Delete a payroll record
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: Payroll record deleted successfully
+        "404":
+          description: Payroll record not found
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+          example: new-user
+        email:
+          type: string
+          example: newuser@example.com
+        password:
+          type: string
+          example: yourpassword
+        role:
+          type: string
+          enum: ["Admin", "Manager", "Employee", "HR", "Guest"]
+          default: "Employee"
+        status:
+          type: string
+          enum: ["Active", "Inactive", "Suspended", "OnLeave", "Pending"]
+          default: "Pending"
+    Employee:
+      type: object
+      properties:
+        employee_id:
+          type: string
+          example: "1"
+        first_name:
+          type: string
+          example: "John"
+        last_name:
+          type: string
+          example: "Doe"
+        email:
+          type: string
+          example: "john.doe@example.com"
+        phone_number:
+          type: string
+          example: "+1234567890"
+        date_of_birth:
+          type: string
+          format: date
+          example: "1990-01-01"
+        address:
+          type: string
+          example: "123 Main St"
+        city:
+          type: string
+          example: "Anytown"
+        state:
+          type: string
+          example: "Anystate"
+        country:
+          type: string
+          example: "Country"
+        zip_code:
+          type: string
+          example: "12345"
+        date_of_hire:
+          type: string
+          format: date
+          example: "2023-01-01"
+        job_title:
+          type: string
+          example: "Software Engineer"
+        department:
+          type: object
+          properties:
+            department_id:
+              type: string
+              example: "2"
+            name:
+              type: string
+              example: "Engineering"
+        manager:
+          type: object
+          properties:
+            manager_id:
+              type: string
+              example: "3"
+            name:
+              type: string
+              example: "Jane Smith"
+        role:
+          type: object
+          properties:
+            role_id:
+              type: string
+              example: "4"
+            name:
+              type: string
+              example: "Developer"
+        salary:
+          type: number
+          format: double
+          example: 80000
+        employment_status:
+          type: string
+          example: "Active"
+        skills:
+          type: array
+          items:
+            type: string
+            example: "JavaScript"
+        certifications:
+          type: array
+          items:
+            type: string
+            example: "AWS Certified Developer"
+        profile_picture:
+          type: string
+          example: "http://example.com/profile.jpg"
+        created_at:
+          type: string
+          format: date-time
+          example: "2024-10-29T10:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2024-10-29T10:00:00Z"
+
+    Payroll:
+      type: object
+      properties:
+        payroll_id:
+          type: integer
+        employee_id:
+          type: integer
+        salary_date:
+          type: string
+          format: date
+        gross_salary:
+          type: number
+          format: float
+        tax_deduction:
+          type: number
+          format: float
+        net_salary:
+          type: number
+          format: float
+        status:
+          type: string
+          enum: [Paid, Pending]
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Review:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        employee_id:
+          type: integer
+          example: 1
+        review_date:
+          type: string
+          format: date
+          example: "2024-01-15"
+        feedback:
+          type: string
+          example: "Great job on the recent project."
+
+    Leave:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        employee_id:
+          type: integer
+          example: 1
+        start_date:
+          type: string
+          format: date
+          example: "2024-01-01"
+        end_date:
+          type: string
+          format: date
+          example: "2024-01-05"
+        reason:
+          type: string
+          example: "Sick leave"
+
+    Attendance:
+      type: object
+      properties:
+        attendance_id:
+          type: integer
+        employee_id:
+          type: integer
+        date:
+          type: string
+          format: date
+        check_in_time:
+          type: string
+          format: time
+        check_out_time:
+          type: string
+          format: time
+        status:
+          type: string
+          enum: [Present, Absent, On Leave]
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        project_id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Task One"
+        description:
+          type: string
+          example: "A brief description of the task."
+        status:
+          type: string
+          enum:
+            - "pending"
+            - "in_progress"
+            - "completed"
+          example: "pending"
+
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Project Alpha"
+        description:
+          type: string
+          example: "A brief description of the project."
+        start_date:
+          type: string
+          format: date
+          example: "2024-01-01"
+        end_date:
+          type: string
+          format: date
+          example: "2024-12-31"
+
+    Role:
+      type: object
+      properties:
+        role_id:
+          type: integer
+        role_name:
+          type: string
+        permissions:
+          type: array
+          items:
+            type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Department:
+      type: object
+      properties:
+        department_id:
+          type: integer
+        department_name:
+          type: string
+        location:
+          type: string
+        manager_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+  parameters:
+    id:
+      in: path
+      name: id
+      required: true
+      description: The ID of the resource
+      schema:
+        type: string
+    search:
+      in: query
+      name: search
+      description: Search term
+      schema:
+        type: string
+        example: ""
+    page:
+      in: query
+      name: page
+      description: Current page number
+      schema:
+        type: integer
+        format: int32
+        example: 1
+    limit:
+      in: query
+      name: limit
+      description: Maximum items to be returned
+      schema:
+        type: integer
+        format: int32
+        example: 5
+    sortType:
+      in: query
+      name: sort_type
+      description: Type of sort (asc or dsc)
+      schema:
+        type: string
+        enum: [asc, dsc]
+        example: dsc
+    sortBy:
+      in: query
+      name: sort_by
+      description: Sort key
+      schema:
+        type: string
+        example: updatedAt
+    expend:
+      in: query
+      name: populate
+      description: populate related property
+      schema:
+        type: string
+        example: "author, comment"
