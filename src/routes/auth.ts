@@ -5,6 +5,7 @@ const authRoutes = Router();
 
 authRoutes.post("/register", authControllers.register);
 authRoutes.post("/login", authControllers.login);
+authRoutes.post("/refresh-token", authControllers.refreshToken);
 
 authRoutes.post("/forgot-password", () => {});
 authRoutes.post("/reset-password", () => {});

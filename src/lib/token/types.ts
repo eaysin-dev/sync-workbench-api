@@ -1,7 +1,5 @@
-// types.ts
-
 export interface AccessTokenPayload {
-  userId: string;
+  id: string;
   username: string;
   email: string;
   role: string;
@@ -9,7 +7,7 @@ export interface AccessTokenPayload {
 }
 
 export interface RefreshTokenPayload {
-  userId: string;
+  id: string;
   username: string;
   email: string;
   role: string;

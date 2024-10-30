@@ -1,5 +1,9 @@
-import jwt from "jsonwebtoken";
+import { serverError } from "@/utils";
+import dotenv from "dotenv";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { AccessTokenPayload, RefreshTokenPayload } from "./types";
+
+dotenv.config();
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "access-secret";
 const REFRESH_TOKEN_SECRET =
@@ -8,36 +12,74 @@ const REFRESH_TOKEN_SECRET =
 const ACCESS_TOKEN_EXPIRATION = process.env.ACCESS_TOKEN_EXPIRATION || "15m";
 const REFRESH_TOKEN_EXPIRATION = process.env.REFRESH_TOKEN_EXPIRATION || "7d";
 
-// Generate Access Token with additional properties
-export const generateAccessToken = (payload: AccessTokenPayload): string => {
-  return jwt.sign(payload, ACCESS_TOKEN_SECRET, {
-    expiresIn: ACCESS_TOKEN_EXPIRATION,
-  });
-};
+interface GenerateTokenOptions {
+  type: "AccessToken" | "RefreshToken";
+  payload: AccessTokenPayload | RefreshTokenPayload;
+  algorithm?: jwt.Algorithm;
+  secret?: string;
+  expiresIn?: string | number;
+}
 
-// Generate Refresh Token with additional properties
-export const generateRefreshToken = (payload: RefreshTokenPayload): string => {
-  return jwt.sign(payload, REFRESH_TOKEN_SECRET, {
-    expiresIn: REFRESH_TOKEN_EXPIRATION,
-  });
-};
+const generateToken = ({
+  type = "AccessToken",
+  payload,
+  algorithm = "HS256",
+  secret = ACCESS_TOKEN_SECRET,
+  expiresIn = REFRESH_TOKEN_EXPIRATION,
+}: GenerateTokenOptions): string => {
+  expiresIn =
+    type === "AccessToken" ? ACCESS_TOKEN_EXPIRATION : REFRESH_TOKEN_EXPIRATION;
+  secret = type === "AccessToken" ? ACCESS_TOKEN_SECRET : REFRESH_TOKEN_SECRET;
 
-// Verify Access Token
-export const verifyAccessToken = (token: string): AccessTokenPayload | null => {
   try {
-    return jwt.verify(token, ACCESS_TOKEN_SECRET) as AccessTokenPayload;
+    return jwt.sign(payload, secret, {
+      algorithm,
+      expiresIn,
+    });
   } catch (error) {
-    return null;
+    console.log("[JWT]", error);
+    throw serverError();
   }
 };
 
-// Verify Refresh Token
-export const verifyRefreshToken = (
-  token: string
-): RefreshTokenPayload | null => {
+// Define the options for decoding
+interface DecodeTokenOptions {
+  token: string;
+}
+
+const decodeToken = ({ token }: DecodeTokenOptions): JwtPayload | null => {
   try {
-    return jwt.verify(token, REFRESH_TOKEN_SECRET) as RefreshTokenPayload;
+    return jwt.decode(token) as JwtPayload | null;
   } catch (error) {
-    return null;
+    console.log("[JWT]", error);
+    throw serverError();
   }
 };
+
+// Define the options for verifying the token
+interface VerifyTokenOptions {
+  type: "AccessToken" | "RefreshToken";
+  token: string;
+  algorithm?: jwt.Algorithm;
+  secret?: string;
+}
+
+const verifyToken = ({
+  type,
+  token,
+  algorithm = "HS256",
+  secret = ACCESS_TOKEN_SECRET,
+}: VerifyTokenOptions): AccessTokenPayload | RefreshTokenPayload => {
+  secret = type === "AccessToken" ? ACCESS_TOKEN_SECRET : REFRESH_TOKEN_SECRET;
+
+  try {
+    return jwt.verify(token, secret, { algorithms: [algorithm] }) as
+      | AccessTokenPayload
+      | RefreshTokenPayload;
+  } catch (error) {
+    console.log("[JWT]", error);
+    throw serverError();
+  }
+};
+
+export { decodeToken, generateToken, verifyToken };

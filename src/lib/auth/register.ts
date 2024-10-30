@@ -23,7 +23,7 @@ const register = async (data: UserData) => {
   });
 
   const tokenPayload = {
-    userId: user.id,
+    id: user.id,
     username: user.username,
     email: user.email,
     role: user.role,
