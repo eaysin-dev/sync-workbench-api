@@ -1,17 +1,23 @@
-import { LoginData, LoginSchema } from "@/schemas/login";
-import { badRequest, hashMatched, validateSchema } from "@/utils";
+import { LoginSchema, LoginSchemaType } from "@/schemas/login";
+import {
+  badRequest,
+  generateErrorResponse,
+  hashMatched,
+  validateSchemas,
+} from "@/utils";
 import { generateToken } from "../token";
 import { findUserByUsername } from "../user";
 
-const login = async (payload: LoginData) => {
-  const data = validateSchema(LoginSchema, payload);
+const login = async (payload: LoginSchemaType) => {
+  const data = validateSchemas(LoginSchema, payload);
+
   const { username, password } = data;
 
   const user = await findUserByUsername(username);
-  if (!user) throw badRequest("Invalid Credentials");
+  if (!user) throw generateErrorResponse(badRequest);
 
   const matched = await hashMatched(password, user.password);
-  if (!matched) throw badRequest("Invalid Credentials");
+  if (!matched) throw generateErrorResponse(badRequest);
 
   const tokenPayload = {
     id: user.id,
@@ -22,12 +28,12 @@ const login = async (payload: LoginData) => {
   };
 
   const accessToken = generateToken({
-    payload: tokenPayload,
     type: "AccessToken",
+    payload: tokenPayload,
   });
   const refreshToken = generateToken({
-    payload: tokenPayload,
     type: "RefreshToken",
+    payload: tokenPayload,
   });
 
   return { accessToken, refreshToken };

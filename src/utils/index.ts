@@ -1,3 +1,3 @@
 export * from "./errors";
 export * from "./hashing";
-export * from "./validate-schema";
+export * from "./validate-schemas";

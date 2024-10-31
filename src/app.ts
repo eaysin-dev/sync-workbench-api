@@ -1,7 +1,7 @@
 import routes from "@/routes";
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import applyMiddleware from "./middleware";
-import { CustomError } from "./utils";
+import globalErrorHandler from "./middleware/error-handler";
 
 // initialize express
 const app = express();
@@ -19,25 +19,6 @@ app.get("/health", (_req, res) => {
 // Routes
 app.use("/api/v1", routes);
 
-// 404 error handler
-app.use((_req: Request, res: Response) => {
-  res.status(404).json({ message: "Resource not found" });
-});
-
-// global error handler
-app.use(
-  (error: CustomError, _req: Request, res: Response, _next: NextFunction) => {
-    if (process.env.NODE_ENV === "development") {
-      console.log(error);
-    }
-
-    res.status(500).json({
-      code: error.status || 500,
-      status: "error",
-      message:
-        error.message || "Internal Server Error. Please try again later.",
-    });
-  }
-);
+app.use(globalErrorHandler);
 
 export default app;

@@ -1,19 +1,18 @@
-import { authenticationError } from "@/utils";
+import { authenticationError, generateErrorResponse } from "@/utils";
 import { generateToken, verifyToken } from "../token";
 import { findUserByUsername } from "../user";
 
 const refreshToken = async (refreshToken: string) => {
-  console.log({ refreshToken });
   const payload = verifyToken({ type: "RefreshToken", token: refreshToken });
 
-  if (!payload) throw authenticationError("Invalid refresh token");
+  if (!payload) throw generateErrorResponse(authenticationError);
 
   if (!payload || !payload.username)
-    throw authenticationError("Invalid refresh token");
+    throw generateErrorResponse(authenticationError);
 
   const user = await findUserByUsername(payload.username);
 
-  if (!user) throw authenticationError("Invalid refresh token");
+  if (!user) throw generateErrorResponse(authenticationError);
 
   const tokenPayload = {
     id: user.id,

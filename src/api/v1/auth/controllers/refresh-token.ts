@@ -1,5 +1,5 @@
-import { authService } from "@/lib";
-import { badRequest } from "@/utils";
+import { authService } from "@/library";
+import { badRequest, generateErrorResponse } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 
 const refreshToken = async (
@@ -9,7 +9,7 @@ const refreshToken = async (
 ) => {
   const { refreshToken } = req.body;
 
-  if (!refreshToken) next(badRequest("Refresh token is required"));
+  if (!refreshToken) next(generateErrorResponse(badRequest));
 
   try {
     const accessToken = await authService.refreshToken(refreshToken);

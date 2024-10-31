@@ -1,17 +1,16 @@
 import { UserData, UserSchema } from "@/schemas";
-import { validateSchema } from "@/utils";
-import { badRequest } from "@/utils/errors";
+import { validateSchemas } from "@/utils";
+import { badRequest, generateErrorResponse } from "@/utils/errors";
 import { generateHash } from "@/utils/hashing";
-import { generateAccessToken, generateRefreshToken } from "../token";
+import { generateToken } from "../token";
 import { createUser, userExist } from "../user";
 
 const register = async (data: UserData) => {
-  const payload = validateSchema(UserSchema, data) as UserData;
+  const payload = validateSchemas(UserSchema, data) as UserData;
   const { email, password, role, status, username } = payload;
 
   const hasUser = await userExist(username);
-  if (hasUser)
-    throw badRequest("Username already exists. Please choose another one.");
+  if (hasUser) throw generateErrorResponse(badRequest);
 
   const hashedPassword = await generateHash(password);
   const user = await createUser({
@@ -30,8 +29,14 @@ const register = async (data: UserData) => {
     status: user.status,
   };
 
-  const accessToken = generateAccessToken(tokenPayload);
-  const refreshToken = generateRefreshToken(tokenPayload);
+  const accessToken = generateToken({
+    type: "AccessToken",
+    payload: tokenPayload,
+  });
+  const refreshToken = generateToken({
+    type: "RefreshToken",
+    payload: tokenPayload,
+  });
 
   return { accessToken, refreshToken };
 };

@@ -1,11 +1,11 @@
-import { authService } from "@/lib";
+import { authService } from "@/library";
 import { LoginSchema } from "@/schemas/login";
-import { validateSchema } from "@/utils";
+import { validateSchemas } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const data = validateSchema(LoginSchema, req.body);
+    const data = validateSchemas(LoginSchema, req.body);
     const { username, password } = data;
 
     const { accessToken, refreshToken } = await authService.login({
