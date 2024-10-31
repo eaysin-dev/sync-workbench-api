@@ -1,4 +1,4 @@
-import { authService } from "@/library";
+import { authService } from "@/lib";
 import { badRequest, generateErrorResponse } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 
@@ -9,7 +9,14 @@ const refreshToken = async (
 ) => {
   const { refreshToken } = req.body;
 
-  if (!refreshToken) next(generateErrorResponse(badRequest));
+  if (!refreshToken) {
+    next(
+      generateErrorResponse({
+        ...badRequest,
+        message: "Access denied. No token provided.",
+      })
+    );
+  }
 
   try {
     const accessToken = await authService.refreshToken(refreshToken);

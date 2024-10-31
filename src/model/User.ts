@@ -1,7 +1,12 @@
 import { Document, Schema, model } from "mongoose";
 
-type Role = "Admin" | "Manager" | "Employee" | "HR" | "Guest";
-type Status = "Active" | "Inactive" | "Suspended" | "OnLeave" | "Pending";
+export type Role = "Admin" | "Manager" | "Employee" | "HR" | "Guest";
+export type Status =
+  | "Active"
+  | "Inactive"
+  | "Suspended"
+  | "OnLeave"
+  | "Pending";
 
 export interface IUser extends Document {
   username: string;

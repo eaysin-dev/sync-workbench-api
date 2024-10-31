@@ -1,4 +1,4 @@
-import { authService } from "@/library";
+import { authService } from "@/lib";
 import { LoginSchema } from "@/schemas/login";
 import { validateSchemas } from "@/utils";
 import { NextFunction, Request, Response } from "express";

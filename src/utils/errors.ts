@@ -58,6 +58,17 @@ export const internalServerError = {
     "Please try again later or contact support if the issue persists.",
 };
 
+export const notFoundError = (path: string) => {
+  return {
+    status: "error",
+    statusCode: 404,
+    code: "NOT_FOUND",
+    message: "Resource not found",
+    details: `The requested resource ${path} was not found on this server.`,
+    suggestion: "Please check the URL or refer to the API documentation.",
+  };
+};
+
 export const authenticationError = {
   statusCode: 401,
   code: "AUTHENTICATION_FAILED",
