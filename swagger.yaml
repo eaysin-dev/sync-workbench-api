@@ -179,7 +179,7 @@ paths:
       security:
         - bearerAuth: []
       summary: "Get a list of employees"
-      description: "Retrieve a list of employees with pagination, sorting, and populate options."
+      description: "Retrieve a list of employees with pagination, sorting, and expend options."
       tags: [Employee]
       parameters:
         - $ref: "#/components/parameters/page"
@@ -1328,8 +1328,8 @@ components:
         example: updatedAt
     expend:
       in: query
-      name: populate
-      description: populate related property
+      name: expend
+      description: expend related property
       schema:
         type: string
         example: "author, comment"

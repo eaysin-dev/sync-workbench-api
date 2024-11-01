@@ -91,7 +91,7 @@ export const internalServerError: ErrorRequestParams = {
     "Please try again later or contact support if the issue persists.",
 };
 
-export const notFoundError = (path: string): ErrorRequestParams => {
+export const notFoundError = (path?: string): ErrorRequestParams => {
   return {
     statusCode: 404,
     code: "NOT_FOUND",

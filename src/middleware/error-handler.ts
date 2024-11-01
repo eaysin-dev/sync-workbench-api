@@ -16,7 +16,7 @@ const globalErrorHandler = (
     return res.status(400).json(syntaxErrorResponse);
   }
 
-  const errorResponse = handleDefaultError(err, req.originalUrl);
+  const errorResponse = handleDefaultError(err, req.path);
   res.status(errorResponse.statusCode).json(errorResponse);
 };
 

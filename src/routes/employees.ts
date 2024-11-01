@@ -1,18 +1,18 @@
 import { employeeControllers } from "@/api";
 import { Router } from "express";
 
-const employeeRoutes = Router();
+const employeesRoutes = Router();
 
-employeeRoutes
+employeesRoutes
   .route("/")
   .get(employeeControllers.getAll)
   .post(employeeControllers.create);
 
-employeeRoutes
+employeesRoutes
   .route("/:id")
   .get(employeeControllers.getById)
   .put(employeeControllers.update)
   .patch(employeeControllers.updatePatch)
   .delete(employeeControllers.remove);
 
-export default employeeRoutes;
+export default employeesRoutes;
