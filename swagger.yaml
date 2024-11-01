@@ -65,7 +65,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
+                  status:
+                    type: string
+                    example: success
+                  statusCode:
                     type: integer
                     example: 200
                   message:
@@ -81,18 +84,7 @@ paths:
                         type: string
                         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         "400":
-          description: Registration failed due to invalid data
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    example: 400
-                  message:
-                    type: string
-                    example: Registration failed
+          $ref: "#/components/responses/400"
 
   /auth/login:
     post:
@@ -111,7 +103,7 @@ paths:
                   example: your-username
                 password:
                   type: string
-                  example: yourpassword
+                  example: yourPassword
       responses:
         "200":
           description: Successful login
@@ -120,7 +112,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
+                  status:
+                    type: string
+                    example: success
+                  statusCode:
                     type: integer
                     example: 200
                   message:
@@ -136,19 +131,7 @@ paths:
                         type: string
                         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    example: 401
-                  message:
-                    type: string
-                    example: Invalid credentials
-                    additionalProperties: true
+          $ref: "#/components/responses/401"
 
   /auth/refresh-token:
     post:
@@ -173,7 +156,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
+                  status:
+                    type: string
+                    example: success
+                  statusCode:
                     type: integer
                     example: 200
                   message:
@@ -186,19 +172,7 @@ paths:
                         type: string
                         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    example: 401
-                  message:
-                    type: string
-                    example: Invalid refresh token
-                    additionalProperties: true
+          $ref: "#/components/responses/401"
 
   /employees:
     get:
@@ -221,7 +195,10 @@ paths:
               schema:
                 type: "object"
                 properties:
-                  code:
+                  status:
+                    type: string
+                    example: success
+                  statusCode:
                     type: integer
                     example: 200
                   message:
@@ -247,45 +224,12 @@ paths:
                     items:
                       $ref: "#/components/schemas/Employee"
         "400":
-          description: "Invalid request parameters."
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    example: 400
-                  message:
-                    type: string
-                    example: "Invalid parameters."
-                  links:
-                    type: object
-                    additionalProperties: true
-                  data:
-                    type: object
-                    additionalProperties: true
+          $ref: "#/components/responses/400"
         "500":
-          description: "Internal server error."
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    example: 500
-                  message:
-                    type: string
-                    example: "Internal server error."
-                  links:
-                    type: object
-                    additionalProperties: true
-                  data:
-                    type: object
-                    additionalProperties: true
-
+          $ref: "#/components/responses/500"
     post:
+      security:
+        - bearerAuth: []
       summary: "Create a new employee"
       description: "Add a new employee to the system."
       tags: ["Employee"]
@@ -303,7 +247,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
+                  status:
+                    type: string
+                    example: success
+                  statusCode:
                     type: integer
                     example: 201
                   message:
@@ -315,46 +262,13 @@ paths:
                   data:
                     $ref: "#/components/schemas/Employee"
         "400":
-          description: "Invalid input."
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    example: 400
-                  message:
-                    type: string
-                    example: "Invalid input."
-                  links:
-                    type: object
-                    additionalProperties: true
-                  data:
-                    type: object
-                    additionalProperties: true
+          $ref: "#/components/responses/400"
         "500":
-          description: "Internal server error."
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    example: 500
-                  message:
-                    type: string
-                    example: "Internal server error."
-                  links:
-                    type: object
-                    additionalProperties: true
-                  data:
-                    type: object
-                    additionalProperties: true
-
+          $ref: "#/components/responses/500"
   /employees/{id}:
     get:
+      security:
+        - bearerAuth: []
       summary: "Get employee details"
       description: "Retrieve detailed information for a specific employee."
       tags: [Employee]
@@ -369,7 +283,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
+                  status:
+                    type: string
+                    example: success
+                  statusCode:
                     type: integer
                     example: 200
                   message:
@@ -381,45 +298,13 @@ paths:
                   data:
                     $ref: "#/components/schemas/Employee"
         "404":
-          description: "Employee not found."
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    example: 404
-                  message:
-                    type: string
-                    example: "Employee not found."
-                  links:
-                    type: object
-                    additionalProperties: true
-                  data:
-                    type: object
-                    additionalProperties: true
+          $ref: "#/components/responses/404"
         "500":
-          description: "Internal server error."
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    example: 500
-                  message:
-                    type: string
-                    example: "Internal server error."
-                  links:
-                    type: object
-                    additionalProperties: true
-                  data:
-                    type: object
-                    additionalProperties: true
+          $ref: "#/components/responses/500"
 
     delete:
+      security:
+        - bearerAuth: []
       summary: "Delete employee"
       tags: [Employee]
       parameters:
@@ -428,7 +313,9 @@ paths:
         "204":
           description: Employee deleted successfully
         "404":
-          description: Employee not found
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
 
   /departments:
     get:
@@ -459,7 +346,7 @@ paths:
         "201":
           description: Department created successfully
         "400":
-          description: Invalid request
+          $ref: "#/components/responses/400"
 
   /departments/{id}:
     get:
@@ -476,7 +363,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Department"
         "404":
-          description: Department not found
+          $ref: "#/components/responses/404"
 
     put:
       tags:
@@ -494,9 +381,9 @@ paths:
         "200":
           description: Department updated successfully
         "400":
-          description: Invalid request
+          $ref: "#/components/responses/400"
         "404":
-          description: Department not found
+          $ref: "#/components/responses/404"
 
     delete:
       tags:
@@ -508,7 +395,7 @@ paths:
         "204":
           description: Department deleted successfully
         "404":
-          description: Department not found
+          $ref: "#/components/responses/404"
 
   /roles:
     get:
@@ -539,7 +426,7 @@ paths:
         "201":
           description: Role created successfully
         "400":
-          description: Invalid request
+          $ref: "#/components/responses/400"
 
   /roles/{id}:
     get:
@@ -556,7 +443,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Role"
         "404":
-          description: Role not found
+          $ref: "#/components/responses/404"
 
     put:
       tags:
@@ -574,9 +461,9 @@ paths:
         "200":
           description: Role updated successfully
         "400":
-          description: Invalid request
+          $ref: "#/components/responses/400"
         "404":
-          description: Role not found
+          $ref: "#/components/responses/404"
 
     delete:
       tags:
@@ -588,7 +475,7 @@ paths:
         "204":
           description: Role deleted successfully
         "404":
-          description: Role not found
+          $ref: "#/components/responses/404"
 
   /projects:
     get:
@@ -619,7 +506,7 @@ paths:
         "201":
           description: Project created successfully
         "400":
-          description: Invalid request
+          $ref: "#/components/responses/400"
 
   /projects/{id}:
     get:
@@ -636,7 +523,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Project"
         "404":
-          description: Project not found
+          $ref: "#/components/responses/404"
 
     put:
       tags:
@@ -654,9 +541,9 @@ paths:
         "200":
           description: Project updated successfully
         "400":
-          description: Invalid request
+          $ref: "#/components/responses/400"
         "404":
-          description: Project not found
+          $ref: "#/components/responses/404"
 
     delete:
       tags:
@@ -668,7 +555,7 @@ paths:
         "204":
           description: Project deleted successfully
         "404":
-          description: Project not found
+          $ref: "#/components/responses/404"
 
   /tasks:
     get:
@@ -699,7 +586,7 @@ paths:
         "201":
           description: Task created successfully
         "400":
-          description: Invalid request
+          $ref: "#/components/responses/400"
 
   /tasks/{id}:
     get:
@@ -716,7 +603,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Task"
         "404":
-          description: Task not found
+          $ref: "#/components/responses/404"
 
     put:
       tags:
@@ -734,9 +621,9 @@ paths:
         "200":
           description: Task updated successfully
         "400":
-          description: Invalid request
+          $ref: "#/components/responses/400"
         "404":
-          description: Task not found
+          $ref: "#/components/responses/404"
 
     delete:
       tags:
@@ -748,7 +635,7 @@ paths:
         "204":
           description: Task deleted successfully
         "404":
-          description: Task not found
+          $ref: "#/components/responses/404"
 
   /attendances:
     get:
@@ -779,7 +666,7 @@ paths:
         "201":
           description: Attendance record created successfully
         "400":
-          description: Invalid request
+          $ref: "#/components/responses/400"
 
   /attendances/{id}:
     get:
@@ -796,7 +683,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Attendance"
         "404":
-          description: Attendance record not found
+          $ref: "#/components/responses/404"
 
     put:
       tags:
@@ -813,10 +700,10 @@ paths:
       responses:
         "200":
           description: Attendance record updated successfully
-        "400":
-          description: Invalid request
         "404":
-          description: Attendance record not found
+          $ref: "#/components/responses/404"
+        "400":
+          $ref: "#/components/responses/400"
 
     delete:
       tags:
@@ -828,7 +715,7 @@ paths:
         "204":
           description: Attendance record deleted successfully
         "404":
-          description: Attendance record not found
+          $ref: "#/components/responses/404"
 
   /leaves:
     get:
@@ -859,7 +746,7 @@ paths:
         "201":
           description: Leave request created successfully
         "400":
-          description: Invalid request
+          $ref: "#/components/responses/400"
 
   /leaves/{id}:
     get:
@@ -876,7 +763,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Leave"
         "404":
-          description: Leave request not found
+          $ref: "#/components/responses/404"
 
     put:
       tags:
@@ -894,9 +781,9 @@ paths:
         "200":
           description: Leave request updated successfully
         "400":
-          description: Invalid request
+          $ref: "#/components/responses/400"
         "404":
-          description: Leave request not found
+          $ref: "#/components/responses/404"
 
     delete:
       tags:
@@ -908,7 +795,7 @@ paths:
         "204":
           description: Leave request deleted successfully
         "404":
-          description: Leave request not found
+          $ref: "#/components/responses/404"
 
   /reviews:
     get:
@@ -939,7 +826,7 @@ paths:
         "201":
           description: Performance review created successfully
         "400":
-          description: Invalid request
+          $ref: "#/components/responses/400"
 
   /reviews/{id}:
     get:
@@ -956,7 +843,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Review"
         "404":
-          description: Performance review not found
+          $ref: "#/components/responses/404"
 
     put:
       tags:
@@ -973,10 +860,10 @@ paths:
       responses:
         "200":
           description: Performance review updated successfully
-        "400":
-          description: Invalid request
         "404":
-          description: Performance review not found
+          $ref: "#/components/responses/404"
+        "400":
+          $ref: "#/components/responses/400"
 
     delete:
       tags:
@@ -988,7 +875,7 @@ paths:
         "204":
           description: Performance review deleted successfully
         "404":
-          description: Performance review not found
+          $ref: "#/components/responses/404"
 
   /payrolls:
     get:
@@ -1019,7 +906,7 @@ paths:
         "201":
           description: Payroll record created successfully
         "400":
-          description: Invalid request
+          $ref: "#/components/responses/400"
 
   /payrolls/{id}:
     get:
@@ -1036,7 +923,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Payroll"
         "404":
-          description: Payroll record not found
+          $ref: "#/components/responses/404"
 
     put:
       tags:
@@ -1053,10 +940,10 @@ paths:
       responses:
         "200":
           description: Payroll record updated successfully
-        "400":
-          description: Invalid request
         "404":
-          description: Payroll record not found
+          $ref: "#/components/responses/404"
+        "400":
+          $ref: "#/components/responses/400"
 
     delete:
       tags:
@@ -1068,7 +955,7 @@ paths:
         "204":
           description: Payroll record deleted successfully
         "404":
-          description: Payroll record not found
+          $ref: "#/components/responses/404"
 
 components:
   securitySchemes:
@@ -1089,7 +976,7 @@ components:
           example: newuser@example.com
         password:
           type: string
-          example: yourpassword
+          example: yourPassword
         role:
           type: string
           enum: ["Admin", "Manager", "Employee", "HR", "Guest"]
@@ -1125,10 +1012,10 @@ components:
           example: "123 Main St"
         city:
           type: string
-          example: "Anytown"
+          example: "AnyTown"
         state:
           type: string
-          example: "Anystate"
+          example: "AnyState"
         country:
           type: string
           example: "Country"
@@ -1424,3 +1311,250 @@ components:
       schema:
         type: string
         example: "author, comment"
+
+  responses:
+    400:
+      description: Bad Request Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              statusCode:
+                type: integer
+                example: 400
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "BAD_REQUEST"
+                  message:
+                    type: string
+                    example: "Bad request"
+                  details:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  timestamp:
+                    type: string
+                    example: "2024-11-01T12:34:56Z"
+                  path:
+                    type: string
+                    example: "/api/v1/resource"
+                  suggestion:
+                    type: string
+                    example: "Please check your request and try again."
+    401:
+      description: Unauthorized Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              statusCode:
+                type: integer
+                example: 401
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "UNAUTHORIZED"
+                  message:
+                    type: string
+                    example: "Unauthorized access"
+                  details:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  timestamp:
+                    type: string
+                    example: "2024-11-01T12:34:56Z"
+                  path:
+                    type: string
+                    example: "/api/v1/protected-resource"
+                  suggestion:
+                    type: string
+                    example: "Please login to access this resource."
+    403:
+      description: Forbidden Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              statusCode:
+                type: integer
+                example: 403
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "FORBIDDEN"
+                  message:
+                    type: string
+                    example: "Forbidden access"
+                  details:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  timestamp:
+                    type: string
+                    example: "2024-11-01T12:34:56Z"
+                  path:
+                    type: string
+                    example: "/api/v1/restricted-resource"
+                  suggestion:
+                    type: string
+                    example: "Check your permissions and try again."
+    404:
+      description: Not Found Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              statusCode:
+                type: integer
+                example: 404
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "NOT_FOUND"
+                  message:
+                    type: string
+                    example: "Resource not found"
+                  details:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  timestamp:
+                    type: string
+                    example: "2024-11-01T12:34:56Z"
+                  path:
+                    type: string
+                    example: "/api/v1/non-existent-resource"
+                  suggestion:
+                    type: string
+                    example: "Ensure the resource ID is correct."
+    409:
+      description: Conflict Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              statusCode:
+                type: integer
+                example: 409
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "CONFLICT"
+                  message:
+                    type: string
+                    example: "Conflict occurred while processing the request"
+                  details:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  timestamp:
+                    type: string
+                    example: "2024-11-01T12:34:56Z"
+                  path:
+                    type: string
+                    example: "/api/v1/resource"
+                  suggestion:
+                    type: string
+                    example: "Try a different resource or modify your request."
+    415:
+      description: Unsupported Media Type Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              statusCode:
+                type: integer
+                example: 415
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "UNSUPPORTED_MEDIA_TYPE"
+                  message:
+                    type: string
+                    example: "Unsupported media type"
+                  details:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  timestamp:
+                    type: string
+                    example: "2024-11-01T12:34:56Z"
+                  path:
+                    type: string
+                    example: "/api/v1/resource"
+                  suggestion:
+                    type: string
+                    example: "Ensure the Content-Type is correct."
+    500:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              statusCode:
+                type: integer
+                example: 500
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "INTERNAL_SERVER_ERROR"
+                  message:
+                    type: string
+                    example: "Internal server error"
+                  details:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  timestamp:
+                    type: string
+                    example: "2024-11-01T12:34:56Z"
+                  path:
+                    type: string
+                    example: "/api/v1/some-resource"
+                  suggestion:
+                    type: string
+                    example: "Please try again later."

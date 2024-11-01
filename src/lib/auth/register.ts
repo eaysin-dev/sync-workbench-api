@@ -10,7 +10,11 @@ const register = async (data: UserData) => {
   const { email, password, role, status, username } = payload;
 
   const hasUser = await userExist(username);
-  if (hasUser) throw generateErrorResponse(badRequest);
+  if (hasUser)
+    throw generateErrorResponse({
+      ...badRequest,
+      message: "User already exist.",
+    });
 
   const hashedPassword = await generateHash(password);
   const user = await createUser({

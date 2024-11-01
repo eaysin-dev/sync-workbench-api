@@ -1,5 +1,5 @@
 import { authService } from "@/lib";
-import { LoginSchema } from "@/schemas/login";
+import { LoginSchema } from "@/schemas/auth";
 import { validateSchemas } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 
@@ -14,7 +14,8 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     });
 
     const response = {
-      code: 200,
+      status: "success",
+      statusCode: 200,
       message: "Login successful",
       data: {
         accessToken,

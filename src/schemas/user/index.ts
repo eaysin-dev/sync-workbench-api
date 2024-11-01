@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// Zod schema for general user data
 export const UserSchema = z.object({
   username: z
     .string()

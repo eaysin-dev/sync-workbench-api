@@ -21,11 +21,14 @@ app.get("/health", (_req, res) => {
 // Routes
 app.use("/api/v1", routes);
 
-const publicRoutes = ["/api/v1/auth/login", "/api/v1/auth/register"];
+const publicRoutes = [
+  "/api/v1/auth/login",
+  "/api/v1/auth/register",
+  "/api/v1/auth/refresh-token",
+];
 app.use((req, res, next) => {
-  if (publicRoutes.includes(req.path)) {
-    return next();
-  }
+  if (publicRoutes.includes(req.path)) return next();
+
   authenticateJWT(req, res, next);
 });
 

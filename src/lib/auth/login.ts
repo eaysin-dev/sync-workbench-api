@@ -1,4 +1,4 @@
-import { LoginSchema, LoginSchemaType } from "@/schemas/login";
+import { LoginSchema, LoginSchemaType } from "@/schemas/auth";
 import {
   badRequest,
   generateErrorResponse,

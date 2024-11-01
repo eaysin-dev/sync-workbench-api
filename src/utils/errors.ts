@@ -41,7 +41,40 @@ export const generateErrorResponse = ({
   };
 };
 
-export const badRequest = {
+export const handleDefaultError = (
+  err: any,
+  path: string,
+  requestId?: string
+): ErrorResponse => {
+  const errorData = {
+    ...internalServerError,
+    code: err.error?.code || "INTERNAL_SERVER_ERROR",
+    message: err.error?.message || "An unexpected error occurred.",
+    details: err.error?.details || "No additional details available.",
+    path,
+    suggestion: err.error?.suggestion || undefined,
+    requestId,
+  };
+  return generateErrorResponse(errorData);
+};
+
+export const handleSyntaxError = (
+  path: string,
+  requestId?: string
+): ErrorResponse => {
+  return generateErrorResponse({
+    ...badRequest,
+    code: "SYNTAX_ERROR",
+    message: "Invalid JSON format in request body.",
+    details: "Check for syntax errors like missing quotes or extra commas.",
+    path,
+    suggestion:
+      "Ensure JSON keys are double-quoted and there are no trailing commas.",
+    requestId,
+  });
+};
+
+export const badRequest: ErrorRequestParams = {
   statusCode: 400,
   code: "BAD_REQUEST",
   message: "Bad Request",
@@ -49,7 +82,7 @@ export const badRequest = {
   suggestion: "Please check the input fields and try again.",
 };
 
-export const internalServerError = {
+export const internalServerError: ErrorRequestParams = {
   statusCode: 500,
   code: "INTERNAL_SERVER_ERROR",
   message: "Internal Server Error",
@@ -58,9 +91,8 @@ export const internalServerError = {
     "Please try again later or contact support if the issue persists.",
 };
 
-export const notFoundError = (path: string) => {
+export const notFoundError = (path: string): ErrorRequestParams => {
   return {
-    status: "error",
     statusCode: 404,
     code: "NOT_FOUND",
     message: "Resource not found",
@@ -69,12 +101,15 @@ export const notFoundError = (path: string) => {
   };
 };
 
-export const authenticationError = {
-  statusCode: 401,
-  code: "AUTHENTICATION_FAILED",
-  message: "Authentication Error",
-  details: "Authentication failed due to invalid credentials.",
-  suggestion: "Please verify your credentials and try again.",
+export const authenticationError = (path: string) => {
+  return {
+    statusCode: 401,
+    code: "AUTHENTICATION_FAILED",
+    message: "Authentication Error",
+    details: "Authentication failed due to invalid credentials.",
+    suggestion: "Please verify your credentials and try again.",
+    path,
+  };
 };
 
 export const authorizationError = {

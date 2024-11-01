@@ -11,9 +11,11 @@ export const authenticateJWT = (
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    return res.status(authenticationError.statusCode).json(
+    const errorPayload = authenticationError(req.originalUrl);
+
+    return res.status(errorPayload.statusCode).json(
       generateErrorResponse({
-        ...authenticationError,
+        ...errorPayload,
         message: "Access denied. No token provided.",
       })
     );
@@ -24,9 +26,11 @@ export const authenticateJWT = (
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(authenticationError.statusCode).json(
+    const errorPayload = authenticationError(req.originalUrl);
+
+    return res.status(errorPayload?.statusCode).json(
       generateErrorResponse({
-        ...authenticationError,
+        ...errorPayload,
         message: "Invalid token or token has expired.",
       })
     );

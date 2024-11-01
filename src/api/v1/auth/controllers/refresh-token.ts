@@ -22,7 +22,8 @@ const refreshToken = async (
     const accessToken = await authService.refreshToken(refreshToken);
 
     res.status(200).json({
-      code: 200,
+      status: "success",
+      statusCode: 200,
       message: "Token refreshed successfully",
       data: {
         accessToken,

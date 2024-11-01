@@ -6,6 +6,7 @@ import { NextFunction, Request, Response } from "express";
 const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const data = validateSchemas(UserSchema, req.body) as UserData;
+
     const { username, password, email, role, status } = data;
 
     const { accessToken, refreshToken } = await authService.register({
@@ -17,7 +18,8 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
     });
 
     const response = {
-      code: 200,
+      status: "success",
+      statusCode: 200,
       message: "Login successful",
       data: { accessToken, refreshToken },
     };

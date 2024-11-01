@@ -1,3 +1,4 @@
+import { handleDefaultError, handleSyntaxError } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 
 const globalErrorHandler = (
@@ -6,21 +7,16 @@ const globalErrorHandler = (
   res: Response,
   _next: NextFunction
 ) => {
-  const errorResponse = {
-    status: "error",
-    statusCode: err.statusCode || 500,
-    error: {
-      code: err.error?.code || "INTERNAL_SERVER_ERROR",
-      message: err.error?.message || "An unexpected error occurred.",
-      details: err.error?.details || "No additional details available.",
-      timestamp: new Date().toISOString(),
-      path: err.error?.originalUrl,
-      suggestion: err.error?.suggestion || undefined,
-    },
-    requestId: (req.headers["x-request-id"] as string) || "unknown",
-    documentation_url: "http://localhost:4000/docs/",
-  };
+  if (
+    err instanceof SyntaxError &&
+    (err as any)?.status === 400 &&
+    "body" in err
+  ) {
+    const syntaxErrorResponse = handleSyntaxError(req.originalUrl);
+    return res.status(400).json(syntaxErrorResponse);
+  }
 
+  const errorResponse = handleDefaultError(err, req.originalUrl);
   res.status(errorResponse.statusCode).json(errorResponse);
 };
 
