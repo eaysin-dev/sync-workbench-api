@@ -1,20 +1,7 @@
+import { UserSchemaType } from "@/schemas";
 import { Document, Schema, model } from "mongoose";
 
-export type Role = "Admin" | "Manager" | "Employee" | "HR" | "Guest";
-export type Status =
-  | "Active"
-  | "Inactive"
-  | "Suspended"
-  | "OnLeave"
-  | "Pending";
-
-export interface IUser extends Document {
-  username: string;
-  password: string;
-  email: string;
-  role: Role;
-  status: Status;
-}
+export interface IUser extends Document, UserSchemaType {}
 
 const userSchema = new Schema<IUser>(
   {

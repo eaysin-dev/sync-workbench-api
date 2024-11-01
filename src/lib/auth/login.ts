@@ -9,7 +9,7 @@ import { generateToken } from "../token";
 import { findUserByUsername } from "../user";
 
 const login = async (payload: LoginSchemaType) => {
-  const data = validateSchemas(LoginSchema, payload);
+  const data = validateSchemas(payload, LoginSchema);
 
   const { username, password } = data;
 

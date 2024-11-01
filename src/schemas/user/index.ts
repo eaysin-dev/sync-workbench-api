@@ -21,4 +21,4 @@ export const UserSchema = z.object({
     .default("Pending"),
 });
 
-export type UserData = z.infer<typeof UserSchema>;
+export type UserSchemaType = z.infer<typeof UserSchema>;

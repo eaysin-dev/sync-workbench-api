@@ -261,6 +261,22 @@ paths:
                     additionalProperties: true
                   data:
                     $ref: "#/components/schemas/Employee"
+                required:
+                  - first_name
+                  - last_name
+                  - phone_number
+                  - date_of_birth
+                  - address
+                  - city
+                  - state
+                  - country
+                  - zip_code
+                  - date_of_hire
+                  - position
+                  - department
+                  - salary
+                  - employment_status
+
         "400":
           $ref: "#/components/responses/400"
         "500":
@@ -301,6 +317,27 @@ paths:
           $ref: "#/components/responses/404"
         "500":
           $ref: "#/components/responses/500"
+
+    put:
+      security:
+        - bearerAuth: []
+      summary: Update a employee
+      tags: [Employee]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Employee"
+      responses:
+        "200":
+          description: Employee updated successfully
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
 
     delete:
       security:
@@ -602,7 +639,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Task"
-        "404":
+        404:
           $ref: "#/components/responses/404"
 
     put:
@@ -618,11 +655,11 @@ paths:
             schema:
               $ref: "#/components/schemas/Task"
       responses:
-        "200":
+        200:
           description: Task updated successfully
-        "400":
+        400:
           $ref: "#/components/responses/400"
-        "404":
+        404:
           $ref: "#/components/responses/404"
 
     delete:
@@ -988,25 +1025,19 @@ components:
     Employee:
       type: object
       properties:
-        employee_id:
-          type: string
-          example: "1"
         first_name:
           type: string
           example: "John"
         last_name:
           type: string
           example: "Doe"
-        email:
-          type: string
-          example: "john.doe@example.com"
         phone_number:
           type: string
           example: "+1234567890"
         date_of_birth:
           type: string
           format: date
-          example: "1990-01-01"
+          example: "2024-11-01T10:30:00.000Z"
         address:
           type: string
           example: "123 Main St"
@@ -1025,7 +1056,7 @@ components:
         date_of_hire:
           type: string
           format: date
-          example: "2023-01-01"
+          example: "2024-11-01T10:30:00.000Z"
         job_title:
           type: string
           example: "Software Engineer"
@@ -1035,27 +1066,18 @@ components:
             department_id:
               type: string
               example: "2"
-            name:
-              type: string
-              example: "Engineering"
         manager:
           type: object
           properties:
             manager_id:
               type: string
               example: "3"
-            name:
-              type: string
-              example: "Jane Smith"
-        role:
+        position:
           type: object
           properties:
-            role_id:
+            position_id:
               type: string
               example: "4"
-            name:
-              type: string
-              example: "Developer"
         salary:
           type: number
           format: double
@@ -1313,7 +1335,7 @@ components:
         example: "author, comment"
 
   responses:
-    400:
+    "400":
       description: Bad Request Error
       content:
         application/json:
@@ -1348,7 +1370,7 @@ components:
                   suggestion:
                     type: string
                     example: "Please check your request and try again."
-    401:
+    "401":
       description: Unauthorized Error
       content:
         application/json:
@@ -1383,7 +1405,7 @@ components:
                   suggestion:
                     type: string
                     example: "Please login to access this resource."
-    403:
+    "403":
       description: Forbidden Error
       content:
         application/json:
@@ -1418,7 +1440,7 @@ components:
                   suggestion:
                     type: string
                     example: "Check your permissions and try again."
-    404:
+    "404":
       description: Not Found Error
       content:
         application/json:
@@ -1453,7 +1475,7 @@ components:
                   suggestion:
                     type: string
                     example: "Ensure the resource ID is correct."
-    409:
+    "409":
       description: Conflict Error
       content:
         application/json:
@@ -1488,7 +1510,7 @@ components:
                   suggestion:
                     type: string
                     example: "Try a different resource or modify your request."
-    415:
+    "415":
       description: Unsupported Media Type Error
       content:
         application/json:
@@ -1523,7 +1545,7 @@ components:
                   suggestion:
                     type: string
                     example: "Ensure the Content-Type is correct."
-    500:
+    "500":
       description: Internal Server Error
       content:
         application/json:

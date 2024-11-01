@@ -1,19 +1,18 @@
-import { UserData, UserSchema } from "@/schemas";
+import { UserSchema, UserSchemaType } from "@/schemas";
 import { validateSchemas } from "@/utils";
-import { badRequest, generateErrorResponse } from "@/utils/errors";
+import { conflictError, generateErrorResponse } from "@/utils/errors";
 import { generateHash } from "@/utils/hashing";
 import { generateToken } from "../token";
 import { createUser, userExist } from "../user";
 
-const register = async (data: UserData) => {
-  const payload = validateSchemas(UserSchema, data) as UserData;
+const register = async (data: UserSchemaType) => {
+  const payload = validateSchemas(data, UserSchema) as UserSchemaType;
   const { email, password, role, status, username } = payload;
 
   const hasUser = await userExist(username);
   if (hasUser)
     throw generateErrorResponse({
-      ...badRequest,
-      message: "User already exist.",
+      ...conflictError("username", username),
     });
 
   const hashedPassword = await generateHash(password);

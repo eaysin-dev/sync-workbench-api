@@ -1,18 +1,4 @@
-import bodyParser from "body-parser";
-import cors from "cors";
-import express, { Application } from "express";
-import morgan from "morgan";
-import swaggerUI from "swagger-ui-express";
-import YAML from "yamljs";
+import { authenticateJWT } from "./authenticate-jwt";
+import globalErrorHandler from "./error-handler";
 
-const swaggerDoc = YAML.load("./swagger.yaml");
-
-const applyMiddleware = (app: Application): void => {
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
-
-  app.use(express.json(), cors(), morgan("dev"));
-  app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc));
-};
-
-export default applyMiddleware;
+export { authenticateJWT, globalErrorHandler };

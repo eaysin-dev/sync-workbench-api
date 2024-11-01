@@ -1,11 +1,11 @@
 import { authService } from "@/lib";
-import { UserData, UserSchema } from "@/schemas";
+import { UserSchema, UserSchemaType } from "@/schemas";
 import { validateSchemas } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const data = validateSchemas(UserSchema, req.body) as UserData;
+    const data = validateSchemas(req.body, UserSchema) as UserSchemaType;
 
     const { username, password, email, role, status } = data;
 

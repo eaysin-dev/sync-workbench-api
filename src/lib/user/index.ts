@@ -1,5 +1,5 @@
 import User from "@/model/User";
-import { UserData } from "@/schemas";
+import { UserSchemaType } from "@/schemas";
 
 const findUserByUsername = async (username: string) => {
   const user = await User.findOne({ username });
@@ -11,7 +11,7 @@ const userExist = async (username: string) => {
   return user ? true : false;
 };
 
-const createUser = async (data: UserData) => {
+const createUser = async (data: UserSchemaType) => {
   const { email, password, role, status, username } = data;
 
   const user = new User({ email, username, password, role, status });

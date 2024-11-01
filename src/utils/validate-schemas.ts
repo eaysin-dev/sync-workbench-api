@@ -1,7 +1,7 @@
 import { ZodError, ZodSchema } from "zod";
 import { formatErrorResponse } from "./format-error-response";
 
-export const validateSchemas = <T>(schema: ZodSchema<T>, data: unknown): T => {
+export const validateSchemas = <T>(data: unknown, schema: ZodSchema<T>): T => {
   try {
     return schema.parse(data);
   } catch (error) {

@@ -56,7 +56,7 @@ const decodeToken = ({ token }: DecodeTokenOptions): JwtPayload | null => {
     return jwt.decode(token) as JwtPayload | null;
   } catch (error) {
     console.log("[JWT]", error);
-    throw generateErrorResponse(authenticationError);
+    throw generateErrorResponse(authenticationError());
   }
 };
 
@@ -82,7 +82,7 @@ const verifyToken = ({
       | RefreshTokenPayload;
   } catch (error) {
     console.log("[JWT]", error);
-    throw generateErrorResponse(authenticationError);
+    throw generateErrorResponse(authenticationError());
   }
 };
 

@@ -5,14 +5,14 @@ import { findUserByUsername } from "../user";
 const refreshToken = async (refreshToken: string) => {
   const payload = verifyToken({ type: "RefreshToken", token: refreshToken });
 
-  if (!payload) throw generateErrorResponse(authenticationError);
+  if (!payload) throw generateErrorResponse(authenticationError());
 
   if (!payload || !payload.username)
-    throw generateErrorResponse(authenticationError);
+    throw generateErrorResponse(authenticationError());
 
   const user = await findUserByUsername(payload.username);
 
-  if (!user) throw generateErrorResponse(authenticationError);
+  if (!user) throw generateErrorResponse(authenticationError());
 
   const tokenPayload = {
     id: user.id,

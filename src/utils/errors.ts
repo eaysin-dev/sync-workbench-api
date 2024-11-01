@@ -101,7 +101,7 @@ export const notFoundError = (path: string): ErrorRequestParams => {
   };
 };
 
-export const authenticationError = (path: string) => {
+export const authenticationError = (path?: string) => {
   return {
     statusCode: 401,
     code: "AUTHENTICATION_FAILED",
@@ -120,12 +120,14 @@ export const authorizationError = {
   suggestion: "Please check your permissions or contact the administrator.",
 };
 
-export const conflictError = {
-  statusCode: 409,
-  code: "CONFLICT_ERROR",
-  message: "Conflict Error",
-  details: "A conflict occurred with the current state of the resource.",
-  suggestion: "Please review the request and try again.",
+export const conflictError = (resourceName: string, resourceValue: string) => {
+  return {
+    statusCode: 409,
+    code: "RESOURCE_CONFLICT",
+    message: `${resourceValue} already exists.`,
+    details: `A resource with the specified ${resourceValue.toLowerCase()} already exists in the system.`,
+    suggestion: `Please use a unique ${resourceName.toLowerCase()} or check the resource for correctness.`,
+  };
 };
 
 export const unprocessableEntityError = {

@@ -5,7 +5,7 @@ import { NextFunction, Request, Response } from "express";
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const data = validateSchemas(LoginSchema, req.body);
+    const data = validateSchemas(req.body, LoginSchema);
     const { username, password } = data;
 
     const { accessToken, refreshToken } = await authService.login({

@@ -1,43 +1,43 @@
 import routes from "@/routes";
-import express from "express";
-import applyMiddleware from "./middleware";
-import { authenticateJWT } from "./middleware/authenticate-jwt";
-import globalErrorHandler from "./middleware/error-handler";
+import bodyParser from "body-parser";
+import cors from "cors";
+import express, { NextFunction, Request, Response } from "express";
+import morgan from "morgan";
+import swaggerUI from "swagger-ui-express";
+import YAML from "yamljs";
+import { globalErrorHandler } from "./middleware";
 import { generateErrorResponse, notFoundError } from "./utils";
 
-// initialize express
+// Initialize express app
 const app = express();
 
-// Apply middleware (assuming applyMiddleware is defined elsewhere)
-applyMiddleware(app);
+// Apply middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json(), cors(), morgan("dev"));
 
-// health check
+// Swagger docs setup
+const swaggerDoc = YAML.load("./swagger.yaml");
+app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc));
+
+// Health check route
 app.get("/health", (_req, res) => {
   res
     .status(200)
     .json({ status: `${process.env.APPLICATION_NAME} service is up` });
 });
 
-// Routes
+// API routes
 app.use("/api/v1", routes);
 
-const publicRoutes = [
-  "/api/v1/auth/login",
-  "/api/v1/auth/register",
-  "/api/v1/auth/refresh-token",
-];
-app.use((req, res, next) => {
-  if (publicRoutes.includes(req.path)) return next();
-
-  authenticateJWT(req, res, next);
-});
-
+// Handle 404 for undefined routes
 app.use((req, res) => {
-  const notFoundResponse = notFoundError(req.originalUrl);
-
-  res.status(404).json(generateErrorResponse(notFoundResponse));
+  res.status(404).json(generateErrorResponse(notFoundError(req.originalUrl)));
 });
 
-app.use(globalErrorHandler);
+// Global error handler
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  globalErrorHandler(err, req, res, next);
+});
 
 export default app;
