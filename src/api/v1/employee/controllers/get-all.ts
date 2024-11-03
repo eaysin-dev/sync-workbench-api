@@ -2,7 +2,7 @@ import { employeeService } from "@/lib";
 import {
   employeeQuerySchema,
   EmployeeQueryType,
-} from "@/schemas/employee/employee-queries";
+} from "@/schemas/employee/get-all-queries";
 import { validateSchemas } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 

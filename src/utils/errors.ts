@@ -1,80 +1,86 @@
-import { ErrorResponse } from "@/types/interfaces";
-import { formatErrorResponse } from "./format-error-response";
+import { ZodIssue } from "zod";
+import { formatValidationErrors } from "./formatted-message";
+import { getId } from "./short-id";
 
-interface ErrorRequestParams {
+export interface ErrorDetails {
+  code: string;
+  message: string;
+  details: string | ZodIssue[];
+  suggestion: string;
+}
+
+export interface ErrorResponse {
+  status?: string;
+  statusCode: number;
+  error: ErrorDetails;
+  requestId?: string;
+  documentation_url?: string;
+  timestamp: string;
+}
+
+interface GenerateErrorParams {
   statusCode: number;
   code: string;
   message: string;
-  details?: string;
-  path?: string;
-  requestId?: string;
+  details?: string | ZodIssue[];
   suggestion?: string;
+  requestId?: string;
+  documentation_url?: string;
 }
 
 export const generateErrorResponse = ({
   statusCode,
+  requestId = getId(),
+  documentation_url = "https://api.example.com/docs/errors",
   code,
   message,
   details = "Please check your request and try again.",
-  path = "",
-  requestId = "",
   suggestion = "If the problem persists, please contact support.",
-}: ErrorRequestParams): ErrorResponse => {
-  const errorResponse = formatErrorResponse({
-    status: "error",
-    statusCode,
+}: GenerateErrorParams): ErrorResponse => {
+  const errorDetails: ErrorDetails = {
     code,
     message,
     details,
-    path,
     suggestion,
-    requestId,
-    documentationUrl: "https://api.example.com/docs/errors",
-  });
+  };
 
   return {
-    ...errorResponse,
-    error: {
-      ...errorResponse.error,
-      timestamp: new Date().toISOString(),
-    },
+    status: "error",
+    statusCode,
+    error: errorDetails,
+    requestId,
+    documentation_url,
+    timestamp: new Date().toISOString(),
   };
 };
 
-export const handleDefaultError = (
-  err: any,
-  path: string,
-  requestId?: string
-): ErrorResponse => {
-  const errorData = {
-    ...internalServerError,
+export const defaultError = (err: any): GenerateErrorParams => {
+  const details = err.error?.details;
+
+  const formattedMessage = Array.isArray(details)
+    ? formatValidationErrors(details)
+    : err.error?.message || "An unexpected error occurred.";
+
+  return {
+    statusCode: 500,
     code: err.error?.code || "INTERNAL_SERVER_ERROR",
-    message: err.error?.message || "An unexpected error occurred.",
+    message: formattedMessage,
     details: err.error?.details || "No additional details available.",
-    path,
     suggestion: err.error?.suggestion || undefined,
-    requestId,
+    documentation_url: err.documentation_url,
   };
-  return generateErrorResponse(errorData);
 };
 
-export const handleSyntaxError = (
-  path: string,
-  requestId?: string
-): ErrorResponse => {
-  return generateErrorResponse({
-    ...badRequest,
-    code: "SYNTAX_ERROR",
-    message: "Invalid JSON format in request body.",
-    details: "Check for syntax errors like missing quotes or extra commas.",
-    path,
-    suggestion:
-      "Ensure JSON keys are double-quoted and there are no trailing commas.",
-    requestId,
-  });
+export const syntaxError: GenerateErrorParams = {
+  statusCode: 400,
+  code: "SYNTAX_ERROR",
+  message: "Invalid JSON format in request body.",
+  details: "Check for syntax errors like missing quotes or extra commas.",
+  suggestion:
+    "Ensure JSON keys are double-quoted and there are no trailing commas.",
 };
 
-export const badRequest: ErrorRequestParams = {
+export const badRequest: GenerateErrorParams = {
   statusCode: 400,
   code: "BAD_REQUEST",
   message: "Bad Request",
@@ -82,7 +88,7 @@ export const badRequest: ErrorRequestParams = {
   suggestion: "Please check the input fields and try again.",
 };
 
-export const internalServerError: ErrorRequestParams = {
+export const internalServerError: GenerateErrorParams = {
   statusCode: 500,
   code: "INTERNAL_SERVER_ERROR",
   message: "Internal Server Error",
@@ -91,28 +97,23 @@ export const internalServerError: ErrorRequestParams = {
     "Please try again later or contact support if the issue persists.",
 };
 
-export const notFoundError = (path?: string): ErrorRequestParams => {
-  return {
-    statusCode: 404,
-    code: "NOT_FOUND",
-    message: "Resource not found",
-    details: `The requested resource ${path} was not found on this server.`,
-    suggestion: "Please check the URL or refer to the API documentation.",
-  };
+export const notFoundError: GenerateErrorParams = {
+  statusCode: 404,
+  code: "NOT_FOUND",
+  message: "Resource not found",
+  details: `The requested resource was not found on this server.`,
+  suggestion: "Please check the URL or refer to the API documentation.",
 };
 
-export const authenticationError = (path?: string) => {
-  return {
-    statusCode: 401,
-    code: "AUTHENTICATION_FAILED",
-    message: "Authentication Error",
-    details: "Authentication failed due to invalid credentials.",
-    suggestion: "Please verify your credentials and try again.",
-    path,
-  };
+export const authenticationError: GenerateErrorParams = {
+  statusCode: 401,
+  code: "AUTHENTICATION_FAILED",
+  message: "Authentication Error",
+  details: "Authentication failed due to invalid credentials.",
+  suggestion: "Please verify your credentials and try again.",
 };
 
-export const authorizationError = {
+export const authorizationError: GenerateErrorParams = {
   statusCode: 403,
   code: "PERMISSION_DENIED",
   message: "Authorization Error",
@@ -120,7 +121,10 @@ export const authorizationError = {
   suggestion: "Please check your permissions or contact the administrator.",
 };
 
-export const conflictError = (resourceName: string, resourceValue: string) => {
+export const conflictError = (
+  resourceName: string,
+  resourceValue: string
+): GenerateErrorParams => {
   return {
     statusCode: 409,
     code: "RESOURCE_CONFLICT",
@@ -130,7 +134,7 @@ export const conflictError = (resourceName: string, resourceValue: string) => {
   };
 };
 
-export const unprocessableEntityError = {
+export const unprocessableEntityError: GenerateErrorParams = {
   statusCode: 422,
   code: "UNPROCESSABLE_ENTITY",
   message: "Unprocessable Entity",
@@ -138,7 +142,7 @@ export const unprocessableEntityError = {
   suggestion: "Please verify the input data and try again.",
 };
 
-export const methodNotAllowedError = {
+export const methodNotAllowedError: GenerateErrorParams = {
   statusCode: 405,
   code: "METHOD_NOT_ALLOWED",
   message: "Method Not Allowed",
@@ -146,7 +150,7 @@ export const methodNotAllowedError = {
   suggestion: "Please check the allowed methods for this endpoint.",
 };
 
-export const tooManyRequestsError = {
+export const tooManyRequestsError: GenerateErrorParams = {
   statusCode: 429,
   code: "TOO_MANY_REQUESTS",
   message: "Too Many Requests",

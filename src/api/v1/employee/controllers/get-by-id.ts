@@ -2,16 +2,17 @@ import { employeeService } from "@/lib";
 import {
   employeeIdWithExpendSchema,
   EmployeeIdWithExpendSchemaType,
-} from "@/schemas/employee/employee-queries";
+} from "@/schemas/employee/get-all-queries";
 import { validateSchemas } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 
 const getById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const queries = validateSchemas(
-      req.query,
+      req.params,
       employeeIdWithExpendSchema
     ) as EmployeeIdWithExpendSchemaType;
+
     const { id, expend } = queries;
     console.log({ queries });
 
@@ -25,7 +26,7 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
       data: employee,
     });
   } catch (error) {
-    next();
+    next(error);
   }
 };
 

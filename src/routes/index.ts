@@ -6,5 +6,5 @@ const router = Router();
 
 router.use("/auth", authRoutes);
 router.use("/employees", employeesRoutes);
-
+// router.get("/employees/:id", employeeControllers.getById);
 export default router;

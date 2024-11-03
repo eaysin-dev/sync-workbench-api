@@ -2,12 +2,12 @@ import { PaginationSchemaType } from "@/schemas/shared/pagination";
 import { FilterQuery } from "mongoose";
 
 const preparePagination = ({
-  page,
-  limit,
+  page = 1,
+  limit = 10,
   total,
 }: {
-  page: number;
-  limit: number;
+  page?: number;
+  limit?: number;
   total: number;
 }): { skip: number; pagination: PaginationSchemaType } => {
   const totalPage = Math.ceil(total / limit);

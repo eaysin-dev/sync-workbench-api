@@ -1,5 +1,5 @@
 import Employee from "@/model/Employee";
-import { EmployeeQueryType } from "@/schemas/employee/employee-queries";
+import { EmployeeQueryType } from "@/schemas/employee/get-all-queries";
 import {
   preparePagination,
   prepareSearchQuery,
@@ -21,7 +21,7 @@ const getAll = async (data: EmployeeQueryType) => {
 
   const employees = await Employee.find(searchQuery)
     .skip(skip)
-    .limit(limit)
+    .limit(limit || 10)
     .sort(sortOptions)
     .populate(expendFields);
 

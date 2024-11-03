@@ -1,4 +1,4 @@
-import { handleDefaultError, handleSyntaxError } from "@/utils";
+import { defaultError, generateErrorResponse, syntaxError } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 
 const globalErrorHandler = (
@@ -12,12 +12,13 @@ const globalErrorHandler = (
     (err as any)?.status === 400 &&
     "body" in err
   ) {
-    const syntaxErrorResponse = handleSyntaxError(req.originalUrl);
-    return res.status(400).json(syntaxErrorResponse);
+    return res.status(400).json(generateErrorResponse(syntaxError));
   }
 
-  const errorResponse = handleDefaultError(err, req.path);
-  res.status(errorResponse.statusCode).json(errorResponse);
+  const errorResponse = defaultError(err);
+  res
+    .status(errorResponse.statusCode)
+    .json(generateErrorResponse(errorResponse));
 };
 
 export default globalErrorHandler;

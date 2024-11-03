@@ -25,6 +25,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.3",
     "morgan": "^1.10.0",
+    "shortid": "^2.2.16",
     "swagger-ui-express": "^5.0.1",
     "yamljs": "^0.3.0",
     "zod": "^3.23.8"
@@ -38,6 +39,7 @@
     "@types/mongoose": "^5.11.97",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.8.4",
+    "@types/shortid": "^2.2.0",
     "@types/supertest": "^6.0.2",
     "@types/swagger-ui-express": "^4.1.7",
     "@types/yamljs": "^0.2.34",

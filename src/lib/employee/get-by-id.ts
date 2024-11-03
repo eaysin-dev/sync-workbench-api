@@ -2,7 +2,7 @@ import Employee from "@/model/Employee";
 import {
   employeeIdWithExpendSchema,
   EmployeeIdWithExpendSchemaType,
-} from "@/schemas/employee/employee-queries";
+} from "@/schemas/employee/get-all-queries";
 
 import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
 

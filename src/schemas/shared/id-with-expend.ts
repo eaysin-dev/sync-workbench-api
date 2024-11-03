@@ -1,11 +1,13 @@
 // id-with-expend.ts
 import { parseCommaSeparatedValues } from "@/utils/parse-comma-separated-values";
 import { z } from "zod";
-import { idSchema } from "./../shared/id";
 
 const createDynamicEnum = <T extends string>(values: [T, ...T[]]) =>
   z.enum(values);
 
+export const idSchema = z.object({
+  id: z.string().regex(/^[a-fA-F0-9]{24}$/, "Invalid ID format"),
+});
 export const createIdWithExpendSchema = <T extends string>(
   validExpendValues: readonly T[]
 ) => {
