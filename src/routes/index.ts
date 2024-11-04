@@ -1,10 +1,10 @@
 import { Router } from "express";
-import authRoutes from "./auth";
-import employeesRoutes from "./employees";
+import authRoutes from "./v1/auth";
+import employeesRoutes from "./v1/employees";
 
 const router = Router();
 
 router.use("/auth", authRoutes);
 router.use("/employees", employeesRoutes);
-// router.get("/employees/:id", employeeControllers.getById);
+
 export default router;

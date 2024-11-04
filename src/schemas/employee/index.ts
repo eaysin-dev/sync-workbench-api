@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const EmployeeSchema = z.object({
+export const employeeSchema = z.object({
   first_name: z.string(),
   last_name: z.string(),
   phone_number: z.string().regex(/^\+\d{1,15}$/),
@@ -38,4 +38,4 @@ export const EmployeeSchema = z.object({
   profile_picture: z.string().url().optional(),
 });
 
-export type EmployeeSchemaType = z.infer<typeof EmployeeSchema>;
+export type EmployeeSchemaType = z.infer<typeof employeeSchema>;

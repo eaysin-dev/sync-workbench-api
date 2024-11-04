@@ -1,5 +1,5 @@
 import { employeeService } from "@/lib";
-import { EmployeeSchema, EmployeeSchemaType } from "@/schemas";
+import { employeeSchema, EmployeeSchemaType } from "@/schemas";
 import { validateSchemas } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 
@@ -7,7 +7,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const data = validateSchemas(
       req.body,
-      EmployeeSchema
+      employeeSchema
     ) as EmployeeSchemaType;
 
     const employee = await employeeService.create(data);

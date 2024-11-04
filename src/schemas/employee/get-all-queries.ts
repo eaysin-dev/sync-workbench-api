@@ -1,13 +1,8 @@
-import { parseCommaSeparatedValues } from "@/utils/parse-comma-separated-values";
-import { z } from "zod";
-import {
-  createIdWithExpendSchema,
-  IdWithExpendSchemaType,
-} from "../shared/id-with-expend";
+import { z, ZodSchema } from "zod";
+import { createExpandSchema } from "../shared/expend";
+import { validExpendValues } from "./get-by-id-queries";
 
-const validExpendValues = ["author", "comment"] as const;
-
-export const employeeQuerySchema = z.object({
+export const employeeQuerySchema: ZodSchema = z.object({
   page: z
     .preprocess(
       (val) => parseInt(val as string, 10),
@@ -23,17 +18,7 @@ export const employeeQuerySchema = z.object({
   sortBy: z.string().optional().default("updatedAt"),
   sortType: z.enum(["asc", "dsc"]).optional().default("asc"),
   search: z.string().optional(),
-  expend: z.preprocess(
-    parseCommaSeparatedValues,
-    z.array(z.enum(validExpendValues)).optional()
-  ),
+  expand: createExpandSchema(validExpendValues),
 });
 
 export type EmployeeQueryType = z.infer<typeof employeeQuerySchema>;
-
-export const employeeIdWithExpendSchema =
-  createIdWithExpendSchema(validExpendValues);
-
-export type EmployeeIdWithExpendSchemaType = IdWithExpendSchemaType<
-  typeof validExpendValues
->;

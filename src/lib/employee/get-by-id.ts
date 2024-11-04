@@ -1,22 +1,16 @@
 import Employee from "@/model/Employee";
 import {
-  employeeIdWithExpendSchema,
-  EmployeeIdWithExpendSchemaType,
-} from "@/schemas/employee/get-all-queries";
-
+  employeeGetByIdSchema,
+  EmployeeGetByIdSchemaType,
+} from "@/schemas/employee/get-by-id-queries";
 import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
 
-const getById = async (data: EmployeeIdWithExpendSchemaType) => {
-  const validateData = validateSchemas(data, employeeIdWithExpendSchema);
-  const { id, expend } = validateData;
+const getById = async (data: EmployeeGetByIdSchemaType) => {
+  const payload = validateSchemas(data, employeeGetByIdSchema);
 
-  const expendFields = Array.isArray(expend)
-    ? expend.filter((field) => field !== undefined)
-    : [];
+  const employee = await Employee.findById(payload.id).populate(payload.expend);
 
-  const employee = await Employee.findById(id).populate(expendFields);
-
-  if (!employee) throw generateErrorResponse(notFoundError());
+  if (!employee) throw generateErrorResponse(notFoundError);
 
   return { employee: employee.toObject() };
 };
