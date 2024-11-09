@@ -8,3 +8,5 @@ export const zodIdObject = z
 export const idSchema = z.object({
   id: zodIdObject,
 });
+
+export type IdSchemaType = z.infer<typeof zodIdObject>;

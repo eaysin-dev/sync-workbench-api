@@ -11,8 +11,8 @@ employeesRoutes
 employeesRoutes
   .route("/:id")
   .get(employeeControllers.getById)
-  .put(employeeControllers.update)
-  .patch(employeeControllers.updatePatch)
+  .put(employeeControllers.upsert)
+  .patch(employeeControllers.partialUpdate)
   .delete(employeeControllers.remove);
 
 export default employeesRoutes;
