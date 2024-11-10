@@ -1,7 +1,9 @@
 import { EmployeeSchemaType } from "@/schemas";
 import { model, Schema } from "mongoose";
 
-export interface IEmployee extends Document, EmployeeSchemaType {}
+export interface IEmployee extends Document, EmployeeSchemaType {
+  full_name: string;
+}
 
 const EmployeeSchema = new Schema<IEmployee>({
   first_name: {
@@ -89,6 +91,14 @@ const EmployeeSchema = new Schema<IEmployee>({
   },
 });
 
-const Employee = model("Employee", EmployeeSchema);
+EmployeeSchema.virtual("full_name").get(function () {
+  return `${this.first_name} ${this.last_name}`;
+});
+
+EmployeeSchema.set("toJSON", {
+  virtuals: true,
+});
+
+const Employee = model<IEmployee>("Employee", EmployeeSchema);
 
 export default Employee;

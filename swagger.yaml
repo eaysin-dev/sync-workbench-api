@@ -18,12 +18,16 @@ servers:
 tags:
   - name: Auth
     description: Authentication Endpoints (public)
+  - name: Permission
+    description: "Operations related to permissions"
+  - name: Role
+    description: "Operations related to roles"
+  - name: RolePermission
+    description: "Operations related to role permissions"
   - name: Employee
     description: Employee Management Endpoints (admin + HR)
   - name: Department
     description: Department Management Endpoints (admin)
-  - name: Role
-    description: Role Management Endpoints (admin)
   - name: Project
     description: Project Management Endpoints (admin + managers)
   - name: Task
@@ -174,6 +178,322 @@ paths:
         "401":
           $ref: "#/components/responses/401"
 
+  /permissions:
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get a list of permissions"
+      tags: [Permission]
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/sortBy"
+        - $ref: "#/components/parameters/sortType"
+      responses:
+        "200":
+          description: "A list of permissions"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Permission"
+        "500":
+          $ref: "#/components/responses/500"
+    post:
+      security:
+        - bearerAuth: []
+      summary: "Create a new permission"
+      tags: [Permission]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Permission"
+      responses:
+        "201":
+          description: "Permission created successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Permission"
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+
+  /permissions/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get permission details"
+      tags: [Permission]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: "Permission details"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Permission"
+        "404":
+          $ref: "#/components/responses/404"
+    put:
+      security:
+        - bearerAuth: []
+      summary: "Update permission details"
+      tags: [Permission]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Permission"
+      responses:
+        "200":
+          description: "Permission updated successfully."
+        "404":
+          $ref: "#/components/responses/404"
+    patch:
+      security:
+        - bearerAuth: []
+      summary: "Partially update permission details"
+      tags: [Permission]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Permission"
+      responses:
+        "200":
+          description: "Permission partially updated successfully."
+        "404":
+          $ref: "#/components/responses/404"
+    delete:
+      security:
+        - bearerAuth: []
+      summary: "Delete permission"
+      tags: [Permission]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: "Permission deleted successfully."
+        "404":
+          $ref: "#/components/responses/404"
+
+  /roles:
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get a list of roles"
+      tags: [Role]
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/sortBy"
+        - $ref: "#/components/parameters/sortType"
+      responses:
+        "200":
+          description: "A list of roles"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Role"
+        "500":
+          $ref: "#/components/responses/500"
+    post:
+      security:
+        - bearerAuth: []
+      summary: "Create a new role"
+      tags: [Role]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Role"
+      responses:
+        "201":
+          description: "Role created successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Role"
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+
+  /roles/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get role details"
+      tags: [Role]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: "Role details"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Role"
+        "404":
+          $ref: "#/components/responses/404"
+    put:
+      security:
+        - bearerAuth: []
+      summary: "Update role details"
+      tags: [Role]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Role"
+      responses:
+        "200":
+          description: "Role updated successfully."
+        "404":
+          $ref: "#/components/responses/404"
+    patch:
+      security:
+        - bearerAuth: []
+      summary: "Partially update role details"
+      tags: [Role]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Role"
+      responses:
+        "200":
+          description: "Role partially updated successfully."
+        "404":
+          $ref: "#/components/responses/404"
+    delete:
+      security:
+        - bearerAuth: []
+      summary: "Delete role"
+      tags: [Role]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: "Role deleted successfully."
+        "404":
+          $ref: "#/components/responses/404"
+
+  /role-permissions:
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get a list of role permissions"
+      tags: [RolePermission]
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/sortBy"
+        - $ref: "#/components/parameters/sortType"
+        - $ref: "#/components/parameters/expend"
+      responses:
+        "200":
+          description: "A list of role permissions"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RolePermission"
+        "500":
+          $ref: "#/components/responses/500"
+    post:
+      security:
+        - bearerAuth: []
+      summary: "Create a new role permission"
+      tags: [RolePermission]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RolePermission"
+      responses:
+        "201":
+          description: "RolePermission created successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RolePermission"
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+
+  /role-permissions/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get role permission details"
+      tags: [RolePermission]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: "Role permission details"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RolePermission"
+        "404":
+          $ref: "#/components/responses/404"
+    patch:
+      security:
+        - bearerAuth: []
+      summary: "Partially update role permission"
+      tags: [RolePermission]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RolePermission"
+      responses:
+        "200":
+          description: "RolePermission partially updated successfully."
+        "404":
+          $ref: "#/components/responses/404"
+    delete:
+      security:
+        - bearerAuth: []
+      summary: "Delete role permission"
+      tags: [RolePermission]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: "Role permission deleted successfully."
+        "404":
+          $ref: "#/components/responses/404"
+
   /employees:
     get:
       security:
@@ -321,7 +641,28 @@ paths:
     put:
       security:
         - bearerAuth: []
-      summary: Update a employee
+      summary: Create or update an employee
+      tags: [Employee]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Employee"
+      responses:
+        "200":
+          description: Employee updated successfully
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+
+    patch:
+      security:
+        - bearerAuth: []
+      summary: "Partially update employee details"
       tags: [Employee]
       parameters:
         - $ref: "#/components/parameters/id"
@@ -431,86 +772,6 @@ paths:
       responses:
         "204":
           description: Department deleted successfully
-        "404":
-          $ref: "#/components/responses/404"
-
-  /roles:
-    get:
-      tags:
-        - Role
-      summary: Get all roles
-      responses:
-        "200":
-          description: A list of roles
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Role"
-
-    post:
-      tags:
-        - Role
-      summary: Create a new role
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Role"
-      responses:
-        "201":
-          description: Role created successfully
-        "400":
-          $ref: "#/components/responses/400"
-
-  /roles/{id}:
-    get:
-      tags:
-        - Role
-      summary: Get a role by ID
-      parameters:
-        - $ref: "#/components/parameters/id"
-      responses:
-        "200":
-          description: Role details
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Role"
-        "404":
-          $ref: "#/components/responses/404"
-
-    put:
-      tags:
-        - Role
-      summary: Update a role
-      parameters:
-        - $ref: "#/components/parameters/id"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Role"
-      responses:
-        "200":
-          description: Role updated successfully
-        "400":
-          $ref: "#/components/responses/400"
-        "404":
-          $ref: "#/components/responses/404"
-
-    delete:
-      tags:
-        - Role
-      summary: Delete a role
-      parameters:
-        - $ref: "#/components/parameters/id"
-      responses:
-        "204":
-          description: Role deleted successfully
         "404":
           $ref: "#/components/responses/404"
 
@@ -1022,6 +1283,60 @@ components:
           type: string
           enum: ["Active", "Inactive", "Suspended", "OnLeave", "Pending"]
           default: "Pending"
+
+    Role:
+      type: object
+      properties:
+        role_id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Permission:
+      type: object
+      properties:
+        resource:
+          type: string
+          description: The name of the resource.
+          example: "user"
+        action:
+          type: string
+          description: The action associated with the resource.
+          enum: ["read", "create", "update", "delete"]
+          example: "read"
+        description:
+          type: string
+          description: Optional description of the permission.
+          example: "Permission to read user data."
+      required:
+        - resource
+        - action
+      additionalProperties: false
+
+    RolePermission:
+      type: object
+      properties:
+        role:
+          type: string
+          description: The ObjectId of the associated role.
+          example: "610d1b2e3a2b0f3d2c0f8a1c"
+        permission:
+          type: string
+          description: The ObjectId of the associated permission.
+          example: "610d1b2e3a2b0f3d2c0f8a1b"
+      required:
+        - role
+        - permission
+      additionalProperties: false
+
     Employee:
       type: object
       properties:
@@ -1244,24 +1559,6 @@ components:
           format: date
           example: "2024-12-31"
 
-    Role:
-      type: object
-      properties:
-        role_id:
-          type: integer
-        role_name:
-          type: string
-        permissions:
-          type: array
-          items:
-            type: integer
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-
     Department:
       type: object
       properties:
@@ -1332,7 +1629,7 @@ components:
       description: expend related property
       schema:
         type: string
-        example: "author, comment"
+        example: ""
 
   responses:
     "400":

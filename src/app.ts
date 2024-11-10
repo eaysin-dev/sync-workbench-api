@@ -5,7 +5,8 @@ import express, { NextFunction, Request, Response } from "express";
 import morgan from "morgan";
 import swaggerUI from "swagger-ui-express";
 import YAML from "yamljs";
-import { globalErrorHandler } from "./middleware";
+import config from "./config/default";
+import { authenticateJWT, globalErrorHandler } from "./middleware";
 import { generateErrorResponse, notFoundError } from "./utils";
 
 // Initialize express app
@@ -15,6 +16,19 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json(), cors(), morgan("dev"));
+
+// Conditionally apply the `authenticateJWT` middleware
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const isPublicRoute = config.publicRoute.some((route) =>
+    req.path.startsWith(route)
+  );
+
+  if (isPublicRoute) {
+    next();
+  } else {
+    authenticateJWT(req, res, next);
+  }
+});
 
 // Swagger docs setup
 const swaggerDoc = YAML.load("./swagger.yaml");
@@ -32,7 +46,7 @@ app.use("/api/v1", routes);
 
 // Handle 404 for undefined routes
 app.use((req, res) => {
-  res.status(404).json(generateErrorResponse(notFoundError(req.originalUrl)));
+  res.status(404).json(generateErrorResponse(notFoundError));
 });
 
 // Global error handler

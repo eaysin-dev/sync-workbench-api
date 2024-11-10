@@ -6,6 +6,11 @@ const findUserByUsername = async (username: string) => {
   return user ? user : false;
 };
 
+const findUserById = async (id: string) => {
+  const user = await User.findById({ id });
+  return user ? user : false;
+};
+
 const userExist = async (username: string) => {
   const user = await findUserByUsername(username);
   return user ? true : false;
@@ -20,4 +25,4 @@ const createUser = async (data: UserSchemaType) => {
   return user.toObject();
 };
 
-export { createUser, findUserByUsername, userExist };
+export { createUser, findUserById, findUserByUsername, userExist };

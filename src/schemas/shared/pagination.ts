@@ -16,4 +16,3 @@ export const paginationSchema = z.object({
 });
 
 export type PaginationSchemaType = z.infer<typeof paginationSchema>;
-export default paginationSchema;

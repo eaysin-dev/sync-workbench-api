@@ -1,24 +1,21 @@
 import { verifyToken } from "@/lib/token";
-import { AuthenticatedRequest } from "@/types/types";
 import { authenticationError, generateErrorResponse } from "@/utils";
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 export const authenticateJWT = (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    const errorPayload = authenticationError(req.originalUrl);
+    const errorPayload = generateErrorResponse({
+      ...authenticationError,
+      message: "Access denied. No token provided.",
+    });
 
-    return res.status(errorPayload.statusCode).json(
-      generateErrorResponse({
-        ...errorPayload,
-        message: "Access denied. No token provided.",
-      })
-    );
+    return res.status(errorPayload.statusCode).json(errorPayload);
   }
 
   try {
@@ -26,13 +23,11 @@ export const authenticateJWT = (
     req.user = decoded;
     next();
   } catch (error) {
-    const errorPayload = authenticationError(req.originalUrl);
+    const errorPayload = generateErrorResponse({
+      ...authenticationError,
+      message: "Invalid token or token has expired.",
+    });
 
-    return res.status(errorPayload?.statusCode).json(
-      generateErrorResponse({
-        ...errorPayload,
-        message: "Invalid token or token has expired.",
-      })
-    );
+    return res.status(errorPayload?.statusCode).json(errorPayload);
   }
 };

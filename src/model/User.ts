@@ -1,7 +1,13 @@
-import { UserSchemaType } from "@/schemas";
-import { Document, Schema, model } from "mongoose";
+import { Document, ObjectId, Schema, model } from "mongoose";
 
-export interface IUser extends Document, UserSchemaType {}
+export interface IUser extends Document {
+  username: string;
+  password: string;
+  email: string;
+  role: ObjectId;
+  permissions: ObjectId[];
+  status: "Active" | "Inactive" | "Suspended" | "OnLeave" | "Pending";
+}
 
 const userSchema = new Schema<IUser>(
   {
@@ -27,11 +33,16 @@ const userSchema = new Schema<IUser>(
       match: [/\S+@\S+\.\S+/, "Please provide a valid email address"],
     },
     role: {
-      type: String,
-      enum: ["Admin", "Manager", "Employee", "HR", "Guest"],
-      default: "Employee",
+      type: Schema.Types.ObjectId,
+      ref: "Role",
       required: true,
     },
+    permissions: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Permission",
+      },
+    ],
     status: {
       type: String,
       enum: ["Active", "Inactive", "Suspended", "OnLeave", "Pending"],

@@ -157,3 +157,16 @@ export const tooManyRequestsError: GenerateErrorParams = {
   details: "Too many requests were sent in a short period.",
   suggestion: "Please wait before sending more requests.",
 };
+
+export const resourceNotFoundError = (
+  resourceName: string,
+  resourceId: string
+): GenerateErrorParams => {
+  return {
+    statusCode: 404,
+    code: "RESOURCE_NOT_FOUND",
+    message: `${resourceName} with ID ${resourceId} not found.`,
+    details: `The requested ${resourceName.toLowerCase()} with ID ${resourceId} was not found on this server.`,
+    suggestion: `Please verify the ${resourceName.toLowerCase()} ID or check the resource status.`,
+  };
+};

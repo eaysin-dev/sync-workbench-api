@@ -1,11 +1,12 @@
 import { employeeControllers } from "@/api";
+import authorization from "@/middleware/authorization";
 import { Router } from "express";
 
 const employeesRoutes = Router();
 
 employeesRoutes
   .route("/")
-  .get(employeeControllers.getAll)
+  .get(authorization(), employeeControllers.getAll)
   .post(employeeControllers.create);
 
 employeesRoutes
