@@ -5,11 +5,11 @@ import { NextFunction, Request, Response } from "express";
 
 const getById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const values = { id: req.params.id, expand: req.query.expand };
+    const values = { id: req.params.id, populate: req.query.populate };
     const validateData = validateSchemas(values, employeeGetByIdSchema);
-    const { id, expand } = validateData;
+    const { id, populate } = validateData;
 
-    const { employee } = await employeeService.getById({ id, expand });
+    const { employee } = await employeeService.getById({ id, populate });
 
     res.status(200).json({
       status: "success",

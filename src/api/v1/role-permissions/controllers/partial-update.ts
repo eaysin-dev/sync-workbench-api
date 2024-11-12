@@ -23,8 +23,6 @@ const partialUpdate = async (
       links: { self: req.originalUrl },
     });
   } catch (error) {
-    console.log("error=>>", error);
-
     next(error);
   }
 };

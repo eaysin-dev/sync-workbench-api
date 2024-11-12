@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const employeeSchema = z.object({
+  user: z.string().min(1, { message: "User ID is required" }),
   first_name: z.string(),
   last_name: z.string(),
   phone_number: z.string().regex(/^\+\d{1,15}$/),
@@ -35,7 +36,10 @@ export const employeeSchema = z.object({
   employment_status: z.enum(["Active", "Inactive", "Suspended", "Terminated"]),
   skills: z.array(z.string()).optional(),
   certifications: z.array(z.string()).optional(),
-  profile_picture: z.string().url().optional(),
+  // profile_picture: z.string().url().optional(),
 });
 
+export const employeePartialSchema = employeeSchema.partial();
+
 export type EmployeeSchemaType = z.infer<typeof employeeSchema>;
+export type EmployeePartialSchemaType = z.infer<typeof employeePartialSchema>;

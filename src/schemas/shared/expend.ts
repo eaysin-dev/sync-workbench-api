@@ -1,18 +1,23 @@
 import { z } from "zod";
 
-export const createExpandSchema = (allowedExpandValues: readonly string[]) => {
-  const ExpandEnum = z.enum(allowedExpandValues as [string, ...string[]]);
+export const createPopulateSchema = (
+  allowedExpandValues: readonly string[]
+) => {
+  const PopulateEnum = z.enum(allowedExpandValues as [string, ...string[]]);
+  const values = allowedExpandValues.join(", ");
 
   return z
-    .string()
+    .union([z.string(), z.array(z.string())])
     .optional()
-    .transform((val) => (val ? val.split(",").map((item) => item.trim()) : []))
+    .transform((val) => {
+      if (Array.isArray(val)) return val.map((item) => item.trim());
+
+      return val ? val.split(",").map((item) => item.trim()) : [];
+    })
     .refine(
-      (array) => array.every((item) => ExpandEnum.safeParse(item).success),
+      (array) => array.every((item) => PopulateEnum.safeParse(item).success),
       {
-        message: `Expand can only contain the following values: ${allowedExpandValues.join(
-          ", "
-        )}`,
+        message: `Populate can only contain the following values: ${values}`,
       }
     );
 };

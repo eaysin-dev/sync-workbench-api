@@ -5,8 +5,8 @@ export interface IUser extends Document {
   password: string;
   email: string;
   role: ObjectId;
-  permissions: ObjectId[];
   status: "Active" | "Inactive" | "Suspended" | "OnLeave" | "Pending";
+  employee: ObjectId;
 }
 
 const userSchema = new Schema<IUser>(
@@ -37,18 +37,13 @@ const userSchema = new Schema<IUser>(
       ref: "Role",
       required: true,
     },
-    permissions: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Permission",
-      },
-    ],
     status: {
       type: String,
       enum: ["Active", "Inactive", "Suspended", "OnLeave", "Pending"],
       default: "Pending",
       required: true,
     },
+    employee: { type: Schema.Types.ObjectId, ref: "Employee" },
   },
   {
     timestamps: true,

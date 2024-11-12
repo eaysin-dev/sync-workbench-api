@@ -1,6 +1,8 @@
 import Employee from "@/model/Employee";
 import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
 import { idSchema, IdSchemaType } from "./../../schemas/shared/id";
+import { internalServerError } from "./../../utils/errors";
+import { ObjectId } from "mongoose";
 
 const remove = async (identity: IdSchemaType) => {
   const id = validateSchemas(identity, idSchema);
@@ -8,11 +10,24 @@ const remove = async (identity: IdSchemaType) => {
   const employee = await Employee.findById(id);
   if (!employee) throw generateErrorResponse(notFoundError);
 
-  // TODO:
-  // Asynchronously Delete all associated comments
-  // Comment.deleteMany({article: id})
-
   return Employee.findByIdAndDelete(id);
 };
 
-export default remove;
+const removeEmployeeByUserId = async (userId: ObjectId) => {
+  try {
+    const result = await Employee.deleteOne({ user: userId });
+    if (result.deletedCount === 0)
+      throw generateErrorResponse({
+        ...notFoundError,
+        message: `Employee for user ${userId} not found`,
+      });
+  } catch (error) {
+    console.error(`Error deleting employee for user ${userId}:`, error);
+    throw generateErrorResponse({
+      ...internalServerError,
+      message: `Failed to delete employee for user ${userId}`,
+    });
+  }
+};
+
+export { remove, removeEmployeeByUserId };

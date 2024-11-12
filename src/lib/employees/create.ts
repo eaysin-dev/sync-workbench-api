@@ -1,9 +1,11 @@
 import Employee from "@/model/Employee";
-import { employeeSchema, EmployeeSchemaType } from "@/schemas";
-import { validateSchemas } from "@/utils";
+import { employeePartialSchema, EmployeePartialSchemaType } from "@/schemas";
+import { conflictError, generateErrorResponse, validateSchemas } from "@/utils";
+import mongoose from "mongoose";
 
-const create = async (data: EmployeeSchemaType) => {
+const create = async (data: EmployeePartialSchemaType) => {
   const {
+    user,
     first_name,
     last_name,
     address,
@@ -22,9 +24,22 @@ const create = async (data: EmployeeSchemaType) => {
     job_title,
     manager,
     skills,
-  } = validateSchemas(data, employeeSchema);
+  } = validateSchemas(data, employeePartialSchema);
+
+  if (!user) {
+    throw generateErrorResponse({
+      message: "User ID is required",
+      statusCode: 400,
+      code: "USER_MISSING",
+    });
+  }
+
+  const existingEmployee = await Employee.findOne({ user: user });
+  if (existingEmployee)
+    throw generateErrorResponse(conflictError("employee", user));
 
   const employee = new Employee({
+    user: new mongoose.Types.ObjectId(user),
     first_name,
     last_name,
     address,
@@ -46,7 +61,20 @@ const create = async (data: EmployeeSchemaType) => {
   });
 
   await employee.save();
-  return employee.toObject();
+  return employee;
 };
 
-export default create;
+const createEmptyEmployeeForUser = async (userId: string) => {
+  const existingEmployee = await Employee.findOne({ user: userId });
+  if (existingEmployee)
+    throw generateErrorResponse(conflictError("employee", userId));
+
+  const employeeData: EmployeePartialSchemaType = {
+    user: userId,
+  };
+
+  const employee = await create(employeeData);
+  return { employee };
+};
+
+export { create, createEmptyEmployeeForUser };

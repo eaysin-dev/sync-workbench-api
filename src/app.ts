@@ -17,6 +17,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json(), cors(), morgan("dev"));
 
+// app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+
 // Conditionally apply the `authenticateJWT` middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
   const isPublicRoute = config.publicRoute.some((route) =>

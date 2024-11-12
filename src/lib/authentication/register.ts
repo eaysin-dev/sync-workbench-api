@@ -1,12 +1,13 @@
-import { UserSchema, UserSchemaType } from "@/schemas";
+import { userSchema, UserSchemaType } from "@/schemas";
 import { validateSchemas } from "@/utils";
 import { conflictError, generateErrorResponse } from "@/utils/errors";
 import { generateHash } from "@/utils/hashing";
-import { generateToken } from "../token";
-import { createUser, userExist } from "../user";
+import { generateToken } from "../tokens";
+import { userExist } from "../users";
+import { createUserWithEmployee } from "../users/utils";
 
 const register = async (data: UserSchemaType) => {
-  const payload = validateSchemas(data, UserSchema) as UserSchemaType;
+  const payload = validateSchemas(data, userSchema) as UserSchemaType;
   const { email, password, role, status, username } = payload;
 
   const hasUser = await userExist(username);
@@ -16,7 +17,7 @@ const register = async (data: UserSchemaType) => {
     });
 
   const hashedPassword = await generateHash(password);
-  const user = await createUser({
+  const { user } = await createUserWithEmployee({
     email,
     password: hashedPassword,
     role,
@@ -38,7 +39,7 @@ const register = async (data: UserSchemaType) => {
   });
   const refreshToken = generateToken({
     type: "RefreshToken",
-    payload: tokenPayload,
+    payload: { id: user.id },
   });
 
   return { accessToken, refreshToken };

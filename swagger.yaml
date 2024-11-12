@@ -18,6 +18,8 @@ servers:
 tags:
   - name: Auth
     description: Authentication Endpoints (public)
+  - name: User
+    description: User Management Endpoints (admin)
   - name: Permission
     description: "Operations related to permissions"
   - name: Role
@@ -177,6 +179,192 @@ paths:
                         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         "401":
           $ref: "#/components/responses/401"
+
+  /users:
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get a list of users"
+      description: "Retrieve a list of users with pagination, sorting, and populate options."
+      tags: [User]
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/sortBy"
+        - $ref: "#/components/parameters/sortType"
+        - $ref: "#/components/parameters/populate"
+      responses:
+        "200":
+          description: "A list of users"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Successfully retrieved users."
+                  links:
+                    type: object
+                    additionalProperties: true
+                  pagination:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        description: "Total number of users."
+                      page:
+                        type: integer
+                        description: "Current page number."
+                      limit:
+                        type: integer
+                        description: "Number of users per page."
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+    post:
+      security:
+        - bearerAuth: []
+      summary: "Create a new user"
+      description: "Add a new users to the system."
+      tags: ["User"]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: "Users created successfully."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  statusCode:
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                    example: "User created successfully."
+                  links:
+                    type: object
+                    additionalProperties: true
+                  data:
+                    $ref: "#/components/schemas/User"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+  /users/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get user details"
+      description: "Retrieve detailed information for a specific user."
+      tags: [User]
+      parameters:
+        - $ref: "#/components/parameters/id"
+        - $ref: "#/components/parameters/populate"
+      responses:
+        "200":
+          description: "User details"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "User details retrieved successfully."
+                  links:
+                    type: object
+                    additionalProperties: true
+                  data:
+                    $ref: "#/components/schemas/User"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+
+    put:
+      security:
+        - bearerAuth: []
+      summary: Create or update an user
+      tags: [User]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: User updated successfully
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+
+    patch:
+      security:
+        - bearerAuth: []
+      summary: "Partially update user details"
+      tags: [User]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: User updated successfully
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+
+    delete:
+      security:
+        - bearerAuth: []
+      summary: "Delete user"
+      tags: [User]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: User deleted successfully
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
 
   /permissions:
     get:
@@ -411,7 +599,7 @@ paths:
         - $ref: "#/components/parameters/limit"
         - $ref: "#/components/parameters/sortBy"
         - $ref: "#/components/parameters/sortType"
-        - $ref: "#/components/parameters/expend"
+        - $ref: "#/components/parameters/populate"
       responses:
         "200":
           description: "A list of role permissions"
@@ -499,14 +687,14 @@ paths:
       security:
         - bearerAuth: []
       summary: "Get a list of employees"
-      description: "Retrieve a list of employees with pagination, sorting, and expend options."
+      description: "Retrieve a list of employees with pagination, sorting, and populate options."
       tags: [Employee]
       parameters:
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/limit"
         - $ref: "#/components/parameters/sortBy"
         - $ref: "#/components/parameters/sortType"
-        - $ref: "#/components/parameters/expend"
+        - $ref: "#/components/parameters/populate"
       responses:
         "200":
           description: "A list of employees"
@@ -610,7 +798,7 @@ paths:
       tags: [Employee]
       parameters:
         - $ref: "#/components/parameters/id"
-        - $ref: "#/components/parameters/expend"
+        - $ref: "#/components/parameters/populate"
       responses:
         "200":
           description: "Employee details"
@@ -1269,20 +1457,34 @@ components:
         username:
           type: string
           example: new-user
+          minLength: 3
+          maxLength: 30
+          description: "Unique username with 3 to 30 characters."
         email:
           type: string
           example: newuser@example.com
+          format: email
+          description: "Unique email address in lowercase."
         password:
           type: string
           example: yourPassword
+          minLength: 8
+          description: "Password with a minimum length of 8 characters."
         role:
           type: string
-          enum: ["Admin", "Manager", "Employee", "HR", "Guest"]
-          default: "Employee"
+          example: "63f9a33c8dfaa245d8f8b2e3"
+          description: "ObjectId reference to a Role."
+        permissions:
+          type: array
+          items:
+            type: string
+            example: "63f9a33c8dfaa245d8f8b2e4"
+          description: "Array of ObjectId references to Permissions."
         status:
           type: string
           enum: ["Active", "Inactive", "Suspended", "OnLeave", "Pending"]
           default: "Pending"
+          description: "Current status of the user."
 
     Role:
       type: object
@@ -1623,10 +1825,10 @@ components:
       schema:
         type: string
         example: updatedAt
-    expend:
+    populate:
       in: query
-      name: expend
-      description: expend related property
+      name: populate
+      description: populate related property
       schema:
         type: string
         example: ""

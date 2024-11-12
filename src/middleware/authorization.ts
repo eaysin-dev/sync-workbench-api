@@ -17,7 +17,6 @@ const authorization = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id;
-
       if (!userId) throw generateErrorResponse(authorizationError);
 
       const user = await User.findById(userId).populate("role");
@@ -42,10 +41,11 @@ const authorization = () => {
         role: user.role,
       }).populate<{ permission: IPermission }>("permission");
 
-      const hasPermission = rolePermissions.some(
-        (rp) =>
+      const hasPermission = rolePermissions.some((rp) => {
+        return (
           rp.permission.resource === resource && rp.permission.action === action
-      );
+        );
+      });
 
       if (!hasPermission)
         throw generateErrorResponse({
@@ -55,7 +55,6 @@ const authorization = () => {
 
       next();
     } catch (error) {
-      console.error(error);
       res.status(500).json({ message: "Authorization error", error });
     }
   };

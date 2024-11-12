@@ -1,5 +1,5 @@
 import { z, ZodSchema } from "zod";
-import { createExpandSchema } from "../shared/expend";
+import { createPopulateSchema } from "../shared/expend";
 import { getAllQuerySchema } from "../shared/get-all-queries";
 import { idSchema } from "../shared/id";
 
@@ -13,7 +13,7 @@ export const rolePermissionSchema = z.object({
 export type RolePermissionSchemaType = z.infer<typeof rolePermissionSchema>;
 
 export const rolePermissionQuerySchema: ZodSchema = getAllQuerySchema.extend({
-  expand: createExpandSchema(rolePermissionExpendEnum),
+  populate: createPopulateSchema(rolePermissionExpendEnum),
 });
 
 export type RolePermissionQuerySchemaType = z.infer<
@@ -22,7 +22,7 @@ export type RolePermissionQuerySchemaType = z.infer<
 
 export const rolePermissionGetByIdSchema: ZodSchema = z.object({
   id: idSchema,
-  expand: createExpandSchema(rolePermissionExpendEnum).optional(),
+  populate: createPopulateSchema(rolePermissionExpendEnum).optional(),
 });
 
 export type RolePermissionGetByIdSchemaType = z.infer<

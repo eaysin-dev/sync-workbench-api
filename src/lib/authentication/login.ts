@@ -5,12 +5,11 @@ import {
   hashMatched,
   validateSchemas,
 } from "@/utils";
-import { generateToken } from "../token";
-import { findUserByUsername } from "../user";
+import { generateToken } from "../tokens";
+import { findUserByUsername } from "../users";
 
 const login = async (payload: LoginSchemaType) => {
   const data = validateSchemas(payload, loginSchema);
-
   const { username, password } = data;
 
   const user = await findUserByUsername(username);
@@ -33,7 +32,7 @@ const login = async (payload: LoginSchemaType) => {
   });
   const refreshToken = generateToken({
     type: "RefreshToken",
-    payload: tokenPayload,
+    payload: { id: user?.id },
   });
 
   return { accessToken, refreshToken };

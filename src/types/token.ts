@@ -1,4 +1,4 @@
-import { AccessTokenPayload, RefreshTokenPayload } from "@/lib/token/types";
+import { AccessTokenPayload, RefreshTokenPayload } from "@/lib/tokens/types";
 import { Request } from "express";
 
 export interface AuthenticatedRequest extends Request {

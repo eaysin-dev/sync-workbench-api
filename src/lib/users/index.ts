@@ -1,17 +1,23 @@
-import { create, createEmptyEmployeeForUser } from "./create";
 import getAll from "./get-all";
 import getById from "./get-by-id";
 import partialUpdate from "./partial-update";
-import { remove, removeEmployeeByUserId } from "./remove";
+import remove from "./remove";
 import upsert from "./upsert";
+import {
+  createUser,
+  findUserById,
+  findUserByUsername,
+  userExist,
+} from "./utils";
 
 export {
-  create,
-  createEmptyEmployeeForUser,
+  createUser,
+  findUserById,
+  findUserByUsername,
   getAll,
   getById,
   partialUpdate,
   remove,
-  removeEmployeeByUserId,
   upsert,
+  userExist,
 };

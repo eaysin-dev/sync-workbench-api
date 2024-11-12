@@ -1,4 +1,4 @@
-import { verifyToken } from "@/lib/token";
+import { verifyToken } from "@/lib/tokens";
 import { authenticationError, generateErrorResponse } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 
