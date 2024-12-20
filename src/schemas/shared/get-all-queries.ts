@@ -13,8 +13,8 @@ export const getAllQuerySchema = z.object({
       z.number().int().nonnegative().max(100).default(10).optional()
     )
     .optional(),
-  sortBy: z.string().optional().default("updatedAt"),
-  sortType: z.enum(["asc", "dsc"]).optional().default("asc"),
+  sort_by: z.string().optional().default("updatedAt"),
+  sort_type: z.enum(["asc", "desc"]).optional(),
   search: z.string().optional(),
 });
 

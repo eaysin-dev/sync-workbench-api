@@ -39,9 +39,12 @@ const prepareSearchQuery = (
   return { $or: searchConditions };
 };
 
-export const prepareSortOptions = (sortBy: string, sortType: string) => {
-  const sortOrder = sortType === "asc" ? 1 : -1;
-  return { [sortBy]: sortOrder } as { [key: string]: 1 | -1 };
+export const prepareSortOptions = (
+  sort_by: string,
+  sort_type: string = "asc"
+) => {
+  const sortOrder = sort_type === "asc" ? 1 : -1;
+  return { [sort_by]: sortOrder } as { [key: string]: 1 | -1 };
 };
 
 export { preparePagination, prepareSearchQuery };

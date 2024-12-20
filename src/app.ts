@@ -5,7 +5,7 @@ import express, { NextFunction, Request, Response } from "express";
 import morgan from "morgan";
 import swaggerUI from "swagger-ui-express";
 import YAML from "yamljs";
-import config from "./config/default";
+import defaultConfig from "./config/default";
 import { authenticateJWT, globalErrorHandler } from "./middleware";
 import { generateErrorResponse, notFoundError } from "./utils";
 
@@ -21,7 +21,7 @@ app.use(express.json(), cors(), morgan("dev"));
 
 // Conditionally apply the `authenticateJWT` middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
-  const isPublicRoute = config.publicRoute.some((route) =>
+  const isPublicRoute = defaultConfig.publicRoute.some((route) =>
     req.path.startsWith(route)
   );
 
@@ -47,7 +47,7 @@ app.get("/health", (_req, res) => {
 app.use("/api/v1", routes);
 
 // Handle 404 for undefined routes
-app.use((req, res) => {
+app.use((_req, res) => {
   res.status(404).json(generateErrorResponse(notFoundError));
 });
 

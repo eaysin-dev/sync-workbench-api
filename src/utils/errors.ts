@@ -170,3 +170,16 @@ export const resourceNotFoundError = (
     suggestion: `Please verify the ${resourceName.toLowerCase()} ID or check the resource status.`,
   };
 };
+
+export const duplicateKeyError = (
+  resourceName: string,
+  keyName: string
+): GenerateErrorParams => {
+  return {
+    statusCode: 409,
+    code: "DUPLICATE_KEY_ERROR",
+    message: `${resourceName} with the same ${keyName} already exists.`,
+    details: `A ${resourceName.toLowerCase()} with the specified ${keyName.toLowerCase()} already exists.`,
+    suggestion: `Please ensure the ${keyName.toLowerCase()} is unique before trying again.`,
+  };
+};

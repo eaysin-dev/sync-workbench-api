@@ -10,7 +10,7 @@ import { RolePermissionQuerySchemaType } from "./../../schemas/role-permission/i
 const allowedExpendFields = ["role", "permission"];
 
 const getAll = async (data: RolePermissionQuerySchemaType) => {
-  const { limit, page, sortBy, sortType, expend, search } = data;
+  const { limit, page, sort_by, sort_type, expend, search } = data;
 
   const invalidExpendFields = expend?.filter(
     (field: string) => !allowedExpendFields.includes(field)
@@ -24,7 +24,7 @@ const getAll = async (data: RolePermissionQuerySchemaType) => {
       )
     );
 
-  const sortOptions = prepareSortOptions(sortBy, sortType);
+  const sortOptions = prepareSortOptions(sort_by, sort_type);
 
   const searchFields = ["role", "permission"];
   const searchQuery = prepareSearchQuery(search, searchFields);

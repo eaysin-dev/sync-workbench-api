@@ -1,12 +1,11 @@
 import { employeeControllers } from "@/api";
-import authorization from "@/middleware/authorization";
 import { Router } from "express";
 
 const employeesRoutes = Router();
 
 employeesRoutes
   .route("/")
-  .get(authorization(), employeeControllers.getAll)
+  .get(employeeControllers.getAll)
   .post(employeeControllers.create);
 
 employeesRoutes
@@ -15,5 +14,7 @@ employeesRoutes
   .put(employeeControllers.upsert)
   .patch(employeeControllers.partialUpdate)
   .delete(employeeControllers.remove);
+
+employeesRoutes.route("/user/:id").get(employeeControllers.getByUserId);
 
 export default employeesRoutes;

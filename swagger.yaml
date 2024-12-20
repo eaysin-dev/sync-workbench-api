@@ -188,11 +188,13 @@ paths:
       description: "Retrieve a list of users with pagination, sorting, and populate options."
       tags: [User]
       parameters:
+        - $ref: "#/components/parameters/search"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/sortBy"
-        - $ref: "#/components/parameters/sortType"
+        - $ref: "#/components/parameters/sort_by"
+        - $ref: "#/components/parameters/sort_type"
         - $ref: "#/components/parameters/populate"
+        - $ref: "#/components/parameters/role"
       responses:
         "200":
           description: "A list of users"
@@ -272,6 +274,7 @@ paths:
           $ref: "#/components/responses/400"
         "500":
           $ref: "#/components/responses/500"
+
   /users/{id}:
     get:
       security:
@@ -373,10 +376,11 @@ paths:
       summary: "Get a list of permissions"
       tags: [Permission]
       parameters:
+        - $ref: "#/components/parameters/search"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/sortBy"
-        - $ref: "#/components/parameters/sortType"
+        - $ref: "#/components/parameters/sort_by"
+        - $ref: "#/components/parameters/sort_type"
       responses:
         "200":
           description: "A list of permissions"
@@ -484,10 +488,11 @@ paths:
       summary: "Get a list of roles"
       tags: [Role]
       parameters:
+        - $ref: "#/components/parameters/search"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/sortBy"
-        - $ref: "#/components/parameters/sortType"
+        - $ref: "#/components/parameters/sort_by"
+        - $ref: "#/components/parameters/sort_type"
       responses:
         "200":
           description: "A list of roles"
@@ -595,10 +600,11 @@ paths:
       summary: "Get a list of role permissions"
       tags: [RolePermission]
       parameters:
+        - $ref: "#/components/parameters/search"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/sortBy"
-        - $ref: "#/components/parameters/sortType"
+        - $ref: "#/components/parameters/sort_by"
+        - $ref: "#/components/parameters/sort_type"
         - $ref: "#/components/parameters/populate"
       responses:
         "200":
@@ -690,10 +696,11 @@ paths:
       description: "Retrieve a list of employees with pagination, sorting, and populate options."
       tags: [Employee]
       parameters:
+        - $ref: "#/components/parameters/search"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/sortBy"
-        - $ref: "#/components/parameters/sortType"
+        - $ref: "#/components/parameters/sort_by"
+        - $ref: "#/components/parameters/sort_type"
         - $ref: "#/components/parameters/populate"
       responses:
         "200":
@@ -878,6 +885,43 @@ paths:
       responses:
         "204":
           description: Employee deleted successfully
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+
+  /employees/user/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get employee by userId"
+      description: "Retrieve employee details associated with a specific userId."
+      tags: [Employee]
+      parameters:
+        - $ref: "#/components/parameters/id"
+        - $ref: "#/components/parameters/populate"
+      responses:
+        "200":
+          description: "Employee details retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Employee details retrieved successfully."
+                  links:
+                    type: object
+                    additionalProperties: true
+                  data:
+                    $ref: "#/components/schemas/Employee"
         "404":
           $ref: "#/components/responses/404"
         "500":
@@ -1810,15 +1854,15 @@ components:
         type: integer
         format: int32
         example: 5
-    sortType:
+    sort_type:
       in: query
       name: sort_type
-      description: Type of sort (asc or dsc)
+      description: Type of sort (asc or desc)
       schema:
         type: string
-        enum: [asc, dsc]
-        example: dsc
-    sortBy:
+        enum: [asc, desc]
+        example: desc
+    sort_by:
       in: query
       name: sort_by
       description: Sort key
@@ -1829,6 +1873,13 @@ components:
       in: query
       name: populate
       description: populate related property
+      schema:
+        type: string
+        example: ""
+    role:
+      in: query
+      name: role
+      description: role related property
       schema:
         type: string
         example: ""

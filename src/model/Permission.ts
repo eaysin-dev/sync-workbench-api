@@ -19,4 +19,6 @@ const permissionSchema = new Schema<IPermission>(
   { timestamps: true }
 );
 
+permissionSchema.index({ resource: 1, action: 1 }, { unique: true });
+
 export const Permission = model<IPermission>("Permission", permissionSchema);

@@ -21,6 +21,7 @@ export const authenticateJWT = (
   try {
     const decoded = verifyToken({ type: "AccessToken", token });
     req.user = decoded;
+
     next();
   } catch (error) {
     const errorPayload = generateErrorResponse({

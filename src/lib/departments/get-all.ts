@@ -7,9 +7,9 @@ import {
 } from "@/utils/queries";
 
 const getAll = async (data: EmployeeQueryType) => {
-  const { limit, page, sortBy, sortType, expend, search } = data;
+  const { limit, page, sort_by, sort_type, expend, search } = data;
 
-  const sortOptions = prepareSortOptions(sortBy, sortType);
+  const sortOptions = prepareSortOptions(sort_by, sort_type);
 
   const searchFields = ["first_name", "last_name"];
   const searchQuery = prepareSearchQuery(search, searchFields);

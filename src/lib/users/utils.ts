@@ -1,9 +1,6 @@
+import defaultConfig from "@/config/default";
 import User from "@/model/User";
-import {
-  allowedUserPopulateFields,
-  userSchema,
-  UserSchemaType,
-} from "@/schemas";
+import { userSchema, UserSchemaType } from "@/schemas";
 import { conflictError, generateErrorResponse, validateSchemas } from "@/utils";
 import {
   createEmptyEmployeeForUser,
@@ -12,13 +9,14 @@ import {
 
 const findUserByUsername = async (username: string) => {
   const user = await User.findOne({ username }).populate(
-    allowedUserPopulateFields
+    defaultConfig?.allowedUserPopulateFields
   );
   return user ? user : false;
 };
 
 const findUserById = async (id: string) => {
-  const user = await User.findById({ id });
+  const user = await User.findById({ _id: id });
+
   return user ? user : false;
 };
 

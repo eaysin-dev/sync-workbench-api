@@ -7,9 +7,9 @@ import {
 } from "@/utils/queries";
 
 const getAll = async (data: GetAllQuerySchemaType) => {
-  const { limit, page, sortBy, sortType, search } = data;
+  const { limit, page, sort_by, sort_type, search } = data;
 
-  const sortOptions = prepareSortOptions(sortBy, sortType);
+  const sortOptions = prepareSortOptions(sort_by, sort_type);
 
   const searchFields = ["resource"];
   const searchQuery = prepareSearchQuery(search, searchFields);

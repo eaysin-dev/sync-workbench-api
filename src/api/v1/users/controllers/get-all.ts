@@ -5,9 +5,19 @@ import { NextFunction, Request, Response } from "express";
 
 const getAll = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const queries = validateSchemas(req.query, usersGetAllQuerySchema);
+    const { page, limit, sort_by, sort_type, search, role } = validateSchemas(
+      req.query,
+      usersGetAllQuerySchema
+    );
 
-    const { users, pagination } = await userService.getAll(queries);
+    const { users, pagination } = await userService.getAll({
+      page,
+      limit,
+      sort_by,
+      sort_type,
+      search,
+      role,
+    });
 
     res.status(200).json({
       status: "success",

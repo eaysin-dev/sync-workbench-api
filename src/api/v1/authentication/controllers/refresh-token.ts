@@ -7,7 +7,7 @@ const refreshToken = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { refreshToken } = req.body;
+  const { refreshToken: token } = req.body;
 
   if (!refreshToken) {
     next(
@@ -19,7 +19,8 @@ const refreshToken = async (
   }
 
   try {
-    const accessToken = await authenticateService.refreshToken(refreshToken);
+    const { accessToken, refreshToken } =
+      await authenticateService.refreshToken(token);
 
     res.status(200).json({
       status: "success",
@@ -27,6 +28,7 @@ const refreshToken = async (
       message: "Token refreshed successfully",
       data: {
         accessToken,
+        refreshToken,
       },
     });
   } catch (error) {

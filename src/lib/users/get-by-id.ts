@@ -3,13 +3,12 @@ import { userGetByIdSchema, UserGetByIdSchemaType } from "@/schemas";
 import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
 
 const getById = async (data: UserGetByIdSchemaType) => {
-  const payload = validateSchemas(data, userGetByIdSchema);
+  const { id, populate } = validateSchemas(data, userGetByIdSchema);
+  console.log(populate);
 
-  const userQuery = User.findById(payload.id).select("-password");
+  const userQuery = User.findById(id).select("-password");
 
-  if (payload.expend) {
-    userQuery.populate(payload.expend);
-  }
+  if (populate) userQuery.populate(populate);
 
   const user = await userQuery;
   if (!user) throw generateErrorResponse(notFoundError);

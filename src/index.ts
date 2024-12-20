@@ -1,3 +1,4 @@
+import "@/plugins/toJSONPlugin";
 import dotenv from "dotenv";
 import http from "http";
 import app from "./app";

@@ -1,12 +1,8 @@
 import { Permission } from "@/model/Permission";
-import { permissionSchema, PermissionSchemaType } from "@/schemas/permission";
-import { validateSchemas } from "@/utils";
+import { PermissionSchemaType } from "@/schemas/permission";
 
 const create = async (data: PermissionSchemaType) => {
-  const { action, resource, description } = validateSchemas(
-    data,
-    permissionSchema
-  );
+  const { action, resource, description } = data;
 
   const permission = new Permission({
     action,

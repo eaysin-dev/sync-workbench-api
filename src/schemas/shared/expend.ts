@@ -11,7 +11,6 @@ export const createPopulateSchema = (
     .optional()
     .transform((val) => {
       if (Array.isArray(val)) return val.map((item) => item.trim());
-
       return val ? val.split(",").map((item) => item.trim()) : [];
     })
     .refine(
