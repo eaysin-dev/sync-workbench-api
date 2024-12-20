@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import morgan from "morgan";
+import path from "path";
 import swaggerUI from "swagger-ui-express";
 import YAML from "yamljs";
 import defaultConfig from "./config/default";
@@ -16,6 +17,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json(), cors(), morgan("dev"));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
