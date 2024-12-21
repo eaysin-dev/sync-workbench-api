@@ -1,15 +1,9 @@
-import { loginSchema, LoginSchemaType } from "@/schemas/auth";
-import {
-  badRequest,
-  generateErrorResponse,
-  hashMatched,
-  validateSchemas,
-} from "@/utils";
+import { LoginSchemaType } from "@/schemas/auth";
+import { badRequest, generateErrorResponse, hashMatched } from "@/utils";
 import { generateToken } from "../tokens";
 import { findUserByUsername } from "../users";
 
-const login = async (payload: LoginSchemaType) => {
-  const data = validateSchemas(payload, loginSchema);
+const login = async (data: LoginSchemaType) => {
   const { username, password } = data;
 
   const user = await findUserByUsername(username);
