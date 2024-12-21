@@ -11,7 +11,7 @@ connectionURL = connectionURL.replace("<db_password>", DB_PASSWORD);
 
 const connectToDatabase = async (): Promise<void> => {
   try {
-    await mongoose.connect("mongodb://testuser:password@localhost:27017", {
+    await mongoose.connect(connectionURL, {
       dbName: process.env.DB_NAME,
     });
     console.log("Connected to MongoDB");

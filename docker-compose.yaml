@@ -31,6 +31,20 @@ services:
     depends_on:
       - mongodb
 
+  app:
+    build:
+      context: .
+    container_name: express-app
+    restart: always
+    environment:
+      PORT: 4000
+      MONGO_URI: mongodb://testuser:password@mongodb:27017/admin
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongodb
+    command: ["yarn", "start"]
+
 volumes:
   my_mongodb_data:
     driver: local
