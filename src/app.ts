@@ -38,6 +38,10 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 const swaggerDoc = YAML.load("./swagger.yaml");
 app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 
+app.get("/", (_req, res) => {
+  res.send("Hello World");
+});
+
 // Health check route
 app.get("/health", (_req, res) => {
   res
