@@ -17,12 +17,15 @@ const authorization = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id;
+
       if (!userId) throw generateErrorResponse(authorizationError);
 
       const user = await User.findById(userId).populate("role");
+
       if (!user) throw generateErrorResponse(notFoundError);
 
       const resource = req.baseUrl.split("/").pop();
+
       if (!resource)
         throw generateErrorResponse({
           ...badRequest,

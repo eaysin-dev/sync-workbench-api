@@ -19,13 +19,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json(), cors(), morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+// app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 // Conditionally apply the `authenticateJWT` middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
-  const isPublicRoute = defaultConfig.publicRoute.some((route) =>
-    req.path.startsWith(route)
-  );
+  const isPublicRoute =
+    req.path === "/" ||
+    defaultConfig.publicRoute.some((route) => req.path.startsWith(route));
 
   if (isPublicRoute) {
     next();
@@ -37,10 +37,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 // Swagger docs setup
 const swaggerDoc = YAML.load("./swagger.yaml");
 app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc));
-
-app.get("/", (_req, res) => {
-  res.send("Hello World");
-});
 
 // Health check route
 app.get("/health", (_req, res) => {
