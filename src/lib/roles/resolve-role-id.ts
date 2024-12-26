@@ -1,4 +1,4 @@
-import { Role } from "@/model/Role";
+import { Role } from "@/models/Role";
 import { generateErrorResponse, notFoundError } from "@/utils/errors";
 import mongoose from "mongoose";
 

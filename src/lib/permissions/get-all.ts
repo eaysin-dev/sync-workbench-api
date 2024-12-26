@@ -1,4 +1,4 @@
-import { Permission } from "@/model/Permission";
+import { Permission } from "@/models/Permission";
 import { GetAllQuerySchemaType } from "@/schemas/shared/get-all-queries";
 import {
   preparePagination,

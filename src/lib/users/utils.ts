@@ -1,5 +1,5 @@
 import defaultConfig from "@/config/default";
-import User from "@/model/User";
+import User from "@/models/User";
 import { userSchema, UserSchemaType } from "@/schemas";
 import { conflictError, generateErrorResponse, validateSchemas } from "@/utils";
 import {

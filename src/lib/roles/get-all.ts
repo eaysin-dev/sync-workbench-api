@@ -1,4 +1,4 @@
-import { Role } from "@/model/Role";
+import { Role } from "@/models/Role";
 import { GetAllQuerySchemaType } from "@/schemas/shared/get-all-queries";
 import {
   preparePagination,

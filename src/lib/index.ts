@@ -6,5 +6,3 @@ export * as rolePermissionsService from "@/lib/role-permissions";
 export * as rolesService from "@/lib/roles";
 export * as tokenService from "@/lib/tokens";
 export * as userService from "@/lib/users";
-
-// export * as authorizeController from "@/lib/authorization"

@@ -1,4 +1,4 @@
-import { Permission } from "@/model/Permission";
+import { Permission } from "@/models/Permission";
 import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
 import { idSchema, IdSchemaType } from "./../../schemas/shared/id";
 

@@ -1,4 +1,4 @@
-import User from "@/model/User";
+import User from "@/models/User";
 import { userGetByIdSchema, UserGetByIdSchemaType } from "@/schemas";
 import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
 

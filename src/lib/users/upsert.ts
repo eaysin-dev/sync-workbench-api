@@ -1,4 +1,4 @@
-import User from "@/model/User";
+import User from "@/models/User";
 import { updateUserSchema, UpdateUserSchemaType } from "@/schemas";
 import { idSchema, IdSchemaType } from "@/schemas/shared/id";
 import { validateSchemas } from "@/utils";

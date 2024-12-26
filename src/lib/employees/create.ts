@@ -1,4 +1,4 @@
-import Employee from "@/model/Employee";
+import Employee from "@/models/Employee";
 import { employeePartialSchema, EmployeePartialSchemaType } from "@/schemas";
 import { conflictError, generateErrorResponse, validateSchemas } from "@/utils";
 import mongoose from "mongoose";

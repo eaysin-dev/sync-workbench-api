@@ -1,4 +1,4 @@
-import { Role } from "@/model/Role";
+import { Role } from "@/models/Role";
 import { roleSchema, RoleSchemaType } from "@/schemas/role";
 import { idSchema, IdSchemaType } from "@/schemas/shared/id";
 import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";

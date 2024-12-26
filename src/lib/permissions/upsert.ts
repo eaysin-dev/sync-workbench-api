@@ -1,4 +1,4 @@
-import { Permission } from "@/model/Permission";
+import { Permission } from "@/models/Permission";
 import { permissionSchema, PermissionSchemaType } from "@/schemas/permission";
 import { idSchema, IdSchemaType } from "@/schemas/shared/id";
 import { validateSchemas } from "@/utils";

@@ -1,4 +1,4 @@
-import { Role } from "@/model/Role";
+import { Role } from "@/models/Role";
 import { RoleSchemaType } from "@/schemas/role";
 
 const create = async (data: RoleSchemaType) => {

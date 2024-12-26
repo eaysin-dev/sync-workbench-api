@@ -1,4 +1,4 @@
-import Employee from "@/model/Employee";
+import Employee from "@/models/Employee";
 import { EmployeeQueryType } from "@/schemas/employee/get-all-queries";
 import {
   preparePagination,

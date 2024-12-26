@@ -1,4 +1,4 @@
-import Employee from "@/model/Employee";
+import Employee from "@/models/Employee";
 import { employeeSchema, EmployeeSchemaType } from "@/schemas";
 import { idSchema, IdSchemaType } from "@/schemas/shared/id";
 import { validateSchemas } from "@/utils";

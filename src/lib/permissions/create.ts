@@ -1,4 +1,4 @@
-import { Permission } from "@/model/Permission";
+import { Permission } from "@/models/Permission";
 import { PermissionSchemaType } from "@/schemas/permission";
 
 const create = async (data: PermissionSchemaType) => {

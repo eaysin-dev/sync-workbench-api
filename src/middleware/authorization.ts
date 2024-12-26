@@ -1,6 +1,6 @@
-import { IPermission } from "@/model/Permission";
-import { RolePermission } from "@/model/RolePermission";
-import User from "@/model/User"; // User model for fetching the user and role
+import { IPermission } from "@/models/Permission";
+import { RolePermission } from "@/models/RolePermission";
+import User from "@/models/User";
 import { authorizationError, generateErrorResponse } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 import { badRequest, notFoundError } from "./../utils/errors";
@@ -17,15 +17,12 @@ const authorization = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id;
-
       if (!userId) throw generateErrorResponse(authorizationError);
 
       const user = await User.findById(userId).populate("role");
-
       if (!user) throw generateErrorResponse(notFoundError);
 
       const resource = req.baseUrl.split("/").pop();
-
       if (!resource)
         throw generateErrorResponse({
           ...badRequest,

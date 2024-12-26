@@ -1,5 +1,5 @@
 // lib/partialUpdateEmployee.ts
-import Employee from "@/model/Employee";
+import Employee from "@/models/Employee";
 import { employeeSchema, EmployeeSchemaType } from "@/schemas";
 import { idSchema, IdSchemaType } from "@/schemas/shared/id";
 import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";

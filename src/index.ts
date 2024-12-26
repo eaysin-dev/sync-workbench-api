@@ -1,26 +1,91 @@
-import "@/plugins/toJSONPlugin";
 import dotenv from "dotenv";
-import http from "http";
-import app from "./app";
-import { connectToDatabase } from "./database";
 
-// env configuration
-dotenv.config();
+const result = dotenv.config();
+if (result.error) {
+  dotenv.config({ path: ".env.default" });
+}
 
-const server = http.createServer(app);
-const port = process.env.PORT || 4000;
+import app from "@/app";
+import SafeMongooseConnection from "@/lib/safe-mongoose-connection";
+import logger from "@/logger";
+import util from "util";
 
-const main = async () => {
-  try {
-    await connectToDatabase();
+const PORT = process.env.PORT || 3000;
 
-    server.listen(port, async () => {
-      console.log(`Server is listening on ${port}`);
+let debugCallback;
+if (process.env.NODE_ENV === "development") {
+  debugCallback = (
+    collectionName: string,
+    method: string,
+    query: any,
+    _doc: string
+  ): void => {
+    const message = `${collectionName}.${method}(${util.inspect(query, {
+      colors: true,
+      depth: null,
+    })})`;
+    logger.log({
+      level: "verbose",
+      message,
+      consoleLoggerOptions: { label: "MONGO" },
     });
-  } catch (error) {
-    console.log("Database connection failed");
-    console.log("Message:", error);
-  }
-};
+  };
+}
 
-main();
+const safeMongooseConnection = new SafeMongooseConnection({
+  mongoUrl: process.env.DB_CONNECTION_URL ?? "",
+  debugCallback,
+  onStartConnection: (mongoUrl) =>
+    logger.info(`Connecting to MongoDB at ${mongoUrl}`),
+  onConnectionError: (error, mongoUrl) =>
+    logger.log({
+      level: "error",
+      message: `Could not connect to MongoDB at ${mongoUrl}`,
+      error,
+    }),
+  onConnectionRetry: (mongoUrl) =>
+    logger.info(`Retrying to MongoDB at ${mongoUrl}`),
+});
+
+const serve = () =>
+  app.listen(PORT, () => {
+    logger.info(`🌏 Express server started at http://localhost:${PORT}`);
+
+    if (process.env.NODE_ENV === "development") {
+      // This route is only present in development mode
+      logger.info(
+        `⚙️  Swagger UI hosted at http://localhost:${PORT}/dev/api-docs`
+      );
+    }
+  });
+
+if (process.env.DB_CONNECTION_URL == null) {
+  logger.error(
+    "DB_CONNECTION_URL not specified in environment",
+    new Error("DB_CONNECTION_URL not specified in environment")
+  );
+  process.exit(1);
+} else {
+  safeMongooseConnection.connect((mongoUrl) => {
+    logger.info(`Connected to MongoDB at ${mongoUrl}`);
+    serve();
+  });
+}
+
+// Close the Mongoose connection, when receiving SIGINT
+process.on("SIGINT", async () => {
+  console.log("\n");
+  logger.info("Gracefully shutting down");
+  logger.info("Closing the MongoDB connection");
+  try {
+    await safeMongooseConnection.close(true);
+    logger.info("Mongo connection closed successfully");
+  } catch (err) {
+    logger.log({
+      level: "error",
+      message: "Error shutting closing mongo connection",
+      error: err,
+    });
+  }
+  process.exit(0);
+});

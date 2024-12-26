@@ -1,4 +1,4 @@
-import Employee from "@/model/Employee";
+import Employee from "@/models/Employee";
 import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
 import { idSchema, IdSchemaType } from "./../../schemas/shared/id";
 

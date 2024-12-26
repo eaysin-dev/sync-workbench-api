@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>API Documentation</title>
+    <meta
+      name="description"
+      content="API documentation for Sync-Workbench workforce management solution."
+    />
+    <meta name="author" content="Eaysin Arafat" />
+    <meta http-equiv="cleartype" content="on" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="./api-docs/css/hightlightjs-dark.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300&family=Source+Code+Pro:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./api-docs/css/style.css" media="all" />
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script>
+  </head>
+
+  <body>
+    <div class="left-menu">
+      <div class="content-logo">
+        <div class="logo">
+          <img
+            alt="Sync-Workbench logo"
+            src="./api-docs/images/image.png"
+            height="32"
+          />
+          <span>API Documentation</span>
+        </div>
+        <button class="burger-menu-icon" id="button-menu-mobile">
+          <svg width="34" height="34" viewBox="0 0 100 100">
+            <path
+              class="line line1"
+              d="M 20,29.000046 H 80.000231 C 80.000231,29.000046 94.498839,28.817352 94.532987,66.711331 94.543142,77.980673 90.966081,81.670246 85.259173,81.668997 79.552261,81.667751 75.000211,74.999942 75.000211,74.999942 L 25.000021,25.000058"
+            ></path>
+            <path class="line line2" d="M 20,50 H 80"></path>
+            <path
+              class="line line3"
+              d="M 20,70.999954 H 80.000231 C 80.000231,70.999954 94.498839,71.182648 94.532987,33.288669 94.543142,22.019327 90.966081,18.329754 85.259173,18.331003 79.552261,18.332249 75.000211,25.000058 75.000211,25.000058 L 25.000021,74.999942"
+            ></path>
+          </svg>
+        </button>
+      </div>
+      <div class="mobile-menu-closer"></div>
+      <div class="content-menu">
+        <div class="content-infos">
+          <div class="info"><b>Version:</b> 1.0.5</div>
+          <div class="info"><b>Last Updated:</b> 23rd Dec, 2024</div>
+        </div>
+        <ul>
+          <li class="scroll-to-link active" data-target="content-get-started">
+            <a>GET STARTED</a>
+          </li>
+          <li class="scroll-to-link" data-target="content-get-characters">
+            <a>Get Employees</a>
+          </li>
+          <li class="scroll-to-link" data-target="content-errors">
+            <a>Errors</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-page">
+      <div class="content-code"></div>
+      <div class="content">
+        <div class="overflow-hidden content-section" id="content-get-started">
+          <h1>Get Started</h1>
+          <pre>
+    API Endpoint
+
+        https://api.sync-workbench.com/
+                </pre
+          >
+          <p>
+            The Sync-Workbench API provides programmatic access to read and
+            manage employee data. You can retrieve employee details, manage
+            roles, track performance, and more.
+          </p>
+          <p>
+            To use this API, you need an <strong>API key</strong>. Please
+            contact us at
+            <a href="mailto:support@sync-workbench.com"
+              >support@sync-workbench.com</a
+            >
+            to get your own API key.
+          </p>
+        </div>
+        <div
+          class="overflow-hidden content-section"
+          id="content-get-characters"
+        >
+          <h2>Get Employees</h2>
+          <pre><code class="bash">
+# Example to get employees:
+curl \
+-X POST https://api.sync-workbench.com/employee/get \
+-F 'api_key=your_api_key' \
+-F 'status=active' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre>
+          <p>
+            To get employee details, you need to make a POST call to the
+            following URL:
+            <code class="highlighted break-word"
+              >https://api.sync-workbench.com/employee/get</code
+            >
+          </p>
+          <br />
+          <pre><code class="json">
+Result example:
+
+{
+  query: {
+    offset: 0,
+    limit: 50,
+    status: "active"
+  },
+  result: [
+    {
+      id: 1,
+      first_name: "John",
+      last_name: "Doe",
+      role: "Manager",
+      status: "active",
+      age: 34,
+      location: "New York"
+    },
+    {
+      id: 2,
+      first_name: "Jane",
+      last_name: "Smith",
+      role: "Developer",
+      status: "inactive",
+      age: 29,
+      location: "San Francisco"
+    }
+  ]
+}
+                </code></pre>
+          <h4>Query Parameters</h4>
+          <table class="central-overflow-x">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>api_key</td>
+                <td>String</td>
+                <td>Your API key.</td>
+              </tr>
+              <tr>
+                <td>status</td>
+                <td>String</td>
+                <td>
+                  (optional) A status to filter employees by. E.g., active,
+                  inactive.
+                </td>
+              </tr>
+              <tr>
+                <td>page</td>
+                <td>Integer</td>
+                <td>(optional - default: 1) The page number for pagination.</td>
+              </tr>
+              <tr>
+                <td>limit</td>
+                <td>Integer</td>
+                <td>
+                  (optional - default: 10) The number of records to return,
+                  between 1 and 100.
+                </td>
+              </tr>
+              <tr>
+                <td>sort_type</td>
+                <td>String</td>
+                <td>
+                  (optional) The type of sorting. Values: 'asc' or 'desc'.
+                </td>
+              </tr>
+              <tr>
+                <td>sort_by</td>
+                <td>String</td>
+                <td>
+                  (optional) The field to sort by (e.g., 'updatedAt',
+                  'firstName').
+                </td>
+              </tr>
+              <tr>
+                <td>populate</td>
+                <td>String</td>
+                <td>
+                  (optional) The related property to populate, e.g., 'location'.
+                </td>
+              </tr>
+              <tr>
+                <td>role</td>
+                <td>String</td>
+                <td>
+                  (optional) The role to filter employees by, e.g., 'Developer'.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="overflow-hidden content-section" id="content-errors">
+          <h2>Errors</h2>
+          <p>The Sync-Workbench API uses the following error codes:</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Error Code</th>
+                <th>Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>MISSING_REQUIRED_PARAMETERS</td>
+                <td>The request is missing required parameters.</td>
+              </tr>
+              <tr>
+                <td>INVALID_API_KEY</td>
+                <td>The API key provided is invalid.</td>
+              </tr>
+              <tr>
+                <td>EXPIRED_API_KEY</td>
+                <td>The API key provided has expired.</td>
+              </tr>
+              <tr>
+                <td>INVALID_QUERY_PARAMETERS</td>
+                <td>The query parameters provided are invalid.</td>
+              </tr>
+              <tr>
+                <td>SYNTAX_ERROR</td>
+                <td>
+                  Check for syntax errors like missing quotes or extra commas.
+                </td>
+              </tr>
+              <tr>
+                <td>BAD_REQUEST</td>
+                <td>Validation failed for the input data.</td>
+              </tr>
+              <tr>
+                <td>INTERNAL_SERVER_ERROR</td>
+                <td>An unexpected error occurred on the server.</td>
+              </tr>
+              <tr>
+                <td>NOT_FOUND</td>
+                <td>The requested resource was not found on this server.</td>
+              </tr>
+              <tr>
+                <td>AUTHENTICATION_FAILED</td>
+                <td>Authentication failed due to invalid credentials.</td>
+              </tr>
+              <tr>
+                <td>PERMISSION_DENIED</td>
+                <td>You do not have permission to access this resource.</td>
+              </tr>
+              <tr>
+                <td>RESOURCE_CONFLICT</td>
+                <td>A resource with the specified value already exists.</td>
+              </tr>
+              <tr>
+                <td>UNPROCESSABLE_ENTITY</td>
+                <td>
+                  The request could not be processed due to semantic errors.
+                </td>
+              </tr>
+              <tr>
+                <td>METHOD_NOT_ALLOWED</td>
+                <td>The HTTP method used is not allowed for this endpoint.</td>
+              </tr>
+              <tr>
+                <td>TOO_MANY_REQUESTS</td>
+                <td>Too many requests were sent in a short period.</td>
+              </tr>
+              <tr>
+                <td>RESOURCE_NOT_FOUND</td>
+                <td>
+                  The requested resource with a specific ID was not found.
+                </td>
+              </tr>
+              <tr>
+                <td>DUPLICATE_KEY_ERROR</td>
+                <td>A resource with the same key already exists.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="content-code"></div>
+    </div>
+
+    <!-- GitHub Corner Ribbon -->
+    <a
+      href="https://github.com/Eaysin/Sync-Workbench"
+      class="github-corner"
+      aria-label="View source on GitHub"
+      title="View source on GitHub"
+    >
+      <svg
+        width="80"
+        height="80"
+        viewBox="0 0 250 250"
+        style="
+          z-index: 99999;
+          fill: #70b7fd;
+          color: #fff;
+          position: fixed;
+          top: 0;
+          border: 0;
+          right: 0;
+        "
+        aria-hidden="true"
+      >
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path
+          d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+          fill="currentColor"
+          style="transform-origin: 130px 106px"
+          class="octo-arm"
+        ></path>
+        <path
+          d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+          fill="currentColor"
+          class="octo-body"
+        ></path>
+      </svg>
+    </a>
+    <script src="./api-docs/js/script.js"></script>
+  </body>
+</html>

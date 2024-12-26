@@ -1,61 +1,45 @@
-import routes from "@/routes";
+import { errorHandler } from "@/middleware/error-handler";
 import bodyParser from "body-parser";
-import cors from "cors";
+import compression from "compression";
 import express, { NextFunction, Request, Response } from "express";
-import morgan from "morgan";
 import path from "path";
-import swaggerUI from "swagger-ui-express";
-import YAML from "yamljs";
-import defaultConfig from "./config/default";
-import { authenticateJWT, globalErrorHandler } from "./middleware";
-import { generateErrorResponse, notFoundError } from "./utils";
+import logger from "./logger";
+import routes from "./routes";
 
-// Initialize express app
 const app = express();
 
-// Apply middleware
+function logResponseTime(req: Request, res: Response, next: NextFunction) {
+  const startHrTime = process.hrtime();
+
+  res.on("finish", () => {
+    const elapsedHrTime = process.hrtime(startHrTime);
+    const elapsedTimeInMs = elapsedHrTime[0] * 1000 + elapsedHrTime[1] / 1e6;
+    const message = `${req.method} ${res.statusCode} ${elapsedTimeInMs}ms\t${req.path}`;
+    logger.log({
+      level: "debug",
+      message,
+      consoleLoggerOptions: { label: "API" },
+    });
+  });
+
+  next();
+}
+
+app.use(logResponseTime);
+app.use(compression() as any);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json(), cors(), morgan("dev"));
-app.use(express.static(path.join(__dirname, "public")));
-
-// app.use(cors({ origin: "http://localhost:5173", credentials: true }));
-
-// Conditionally apply the `authenticateJWT` middleware
-app.use((req: Request, res: Response, next: NextFunction) => {
-  const isPublicRoute =
-    req.path === "/" ||
-    defaultConfig.publicRoute.some((route) => req.path.startsWith(route));
-
-  if (isPublicRoute) {
-    next();
-  } else {
-    authenticateJWT(req, res, next);
-  }
-});
-
-// Swagger docs setup
-const swaggerDoc = YAML.load("./swagger.yaml");
-app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc));
-
-// Health check route
+app.use(
+  express.static(path.join(__dirname, "public"), { maxAge: 31557600000 })
+);
 app.get("/health", (_req, res) => {
   res
     .status(200)
     .json({ status: `${process.env.APPLICATION_NAME} service is up` });
 });
 
-// API routes
-app.use("/api/v1", routes);
+app.use(routes);
 
-// Handle 404 for undefined routes
-app.use((_req, res) => {
-  res.status(404).json(generateErrorResponse(notFoundError));
-});
-
-// Global error handler
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  globalErrorHandler(err, req, res, next);
-});
+app.use(errorHandler);
 
 export default app;

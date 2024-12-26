@@ -1,4 +1,4 @@
-import Employee from "@/model/Employee";
+import Employee from "@/models/Employee";
 import { EmployeeSchemaType } from "@/schemas";
 
 const create = async (data: EmployeeSchemaType) => {
