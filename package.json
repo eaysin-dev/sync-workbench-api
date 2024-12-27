@@ -6,9 +6,6 @@
     "type": "git",
     "url": "git+https://github.com/eaysin-arafat/sync-workbench-api.git"
   },
-  "_moduleAliases": {
-    "@": "src"
-  },
   "keywords": [
     "hr",
     "management"

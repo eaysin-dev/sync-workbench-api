@@ -1,13 +1,15 @@
 {
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
-  },
-  "rewrites": [
+  "version": 2,
+  "name": "sync-workbench",
+  "builds": [
     {
-      "source": "/(.*)",
-      "destination": "/src/$1"
+      "src": "src/index.ts",
+      "use": "@vercel/node"
     }
-  ]
+  ],
+  "routes": [{ "src": "/(.*)", "dest": "/src/index.ts" }],
+
+  "env": {
+    "NODE_ENV": "production"
+  }
 }
