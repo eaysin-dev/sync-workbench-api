@@ -1,7 +1,7 @@
+import app from "@/app";
 import request from "supertest";
-import app from "../src/app";
 
-jest.mock("../src/models/Book");
+jest.mock("@/models/Book.ts");
 
 describe("App Test", () => {
   test("GET /random-url should return 404", (done) => {

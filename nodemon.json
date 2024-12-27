@@ -1,6 +1,6 @@
 {
   "ignore": ["**/*.test.ts", "**/*.spec.ts", ".git", "node_modules"],
   "watch": ["src"],
-  "exec": "yarn ts-node-dev -r tsconfig-paths/register --transpile-only src/index.ts",
+  "exec": "npx ts-node-dev -r tsconfig-paths/register --transpile-only src/index.ts",
   "ext": "ts"
 }

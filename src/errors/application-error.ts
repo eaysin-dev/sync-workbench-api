@@ -22,7 +22,7 @@ export default class ApplicationError extends Error {
 
     const defaultDetails: ErrorDetails = {
       code: code || "INTERNAL_SERVER_ERROR",
-      message: message || "An error occurred",
+      message: message || "An error occurred.",
       details: details || [],
       suggestion: suggestion || "Please try again later.",
     };
