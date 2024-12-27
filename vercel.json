@@ -12,6 +12,7 @@
       "dest": "index.js"
     }
   ],
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }],
   "env": {
     "NODE_ENV": "production"
   }
