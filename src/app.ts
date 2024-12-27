@@ -3,10 +3,17 @@ import { errorHandler } from "@/middleware/error-handler";
 import routes from "@/routes";
 import bodyParser from "body-parser";
 import compression from "compression";
+import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import path from "path";
 
 const app = express();
+
+const corsOptions = {
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 
 function logResponseTime(req: Request, res: Response, next: NextFunction) {
   const startHrTime = process.hrtime();
@@ -26,6 +33,7 @@ function logResponseTime(req: Request, res: Response, next: NextFunction) {
 }
 
 app.use(logResponseTime);
+app.use(cors(corsOptions));
 app.use(compression() as any);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
