@@ -11,15 +11,15 @@
     "management"
   ],
   "author": "Eaysin Arafat",
-  "main": "dist/server.js",
+  "main": "dist/index.js",
   "scripts": {
     "postinstall": "chmod +x ./scripts/dev.sh",
     "setup-actions": "chmod +x ./scripts/setup-github-actions.sh; ./scripts/setup-github-actions.sh",
     "build": "tsc",
-    "dev": "npx nodemon src/server.ts",
+    "dev": "npx nodemon src/index.ts",
     "dev-server": "NODE_ENV=development nodemon",
-    "ts-node-server": "ts-node src/server.ts",
-    "start": "npx nodemon src/server.ts",
+    "ts-node-server": "ts-node src/index.ts",
+    "start": "npx nodemon src/index.ts",
     "test": "jest"
   },
   "dependencies": {
