@@ -1,10 +1,10 @@
+import logger from "@/logger";
 import { errorHandler } from "@/middleware/error-handler";
+import routes from "@/routes";
 import bodyParser from "body-parser";
 import compression from "compression";
 import express, { NextFunction, Request, Response } from "express";
 import path from "path";
-import logger from "./logger";
-import routes from "./routes";
 
 const app = express();
 
@@ -29,9 +29,13 @@ app.use(logResponseTime);
 app.use(compression() as any);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(
-  express.static(path.join(__dirname, "public"), { maxAge: 31557600000 })
-);
+
+app.use(express.static(path.join(__dirname, "..", "public")));
+
+app.get("/", (_req, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
+});
+
 app.get("/health", (_req, res) => {
   res
     .status(200)

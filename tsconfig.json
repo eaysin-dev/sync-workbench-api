@@ -21,6 +21,6 @@
     "strictFunctionTypes": true,
     "skipLibCheck": true
   },
-  "include": ["./src/**/*", "__tests__", "errors", "public", "__tests__"],
+  "include": ["./src/**/*", "__tests__", "errors", "src/public", "__tests__"],
   "exclude": ["**/__tests__/**", "**/*.test.ts", "**/*.spec.ts", "node_modules"]
 }
