@@ -5,9 +5,7 @@
     "rootDir": "./src",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"],
-      "#/*": ["./*"],
-      "*": ["node_modules/*", "src/types/*"]
+      "@/*": ["src/*"]
     },
     "outDir": "./dist",
     "esModuleInterop": true,
@@ -19,8 +17,11 @@
     "noImplicitAny": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "declaration": true
   },
-  "include": ["./src/**/*", "__tests__", "errors", "src/public", "__tests__"],
-  "exclude": ["**/__tests__/**", "**/*.test.ts", "**/*.spec.ts", "node_modules"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.test.ts", "**/*.spec.ts", "__tests__"]
 }
