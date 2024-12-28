@@ -1,125 +1,139 @@
-<a href="https://snyk.io//test/github/sidhantpanda/docker-express-typescript-boilerplate?targetFile=package.json">
-  <img src="https://snyk.io//test/github/sidhantpanda/docker-express-typescript-boilerplate/badge.svg?targetFile=package.json" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io//test/github/sidhantpanda/docker-express-typescript-boilerplate?targetFile=package.json" style="max-width:100%;">
-</a>
-<a href="#">
-  <img src="https://github.com/sidhantpanda/docker-express-typescript-boilerplate/workflows/Publish%20latest%20image/badge.svg" alt="Publish latest image" style="max-width:100%;">
-</a>
+# Sync-Workbench API
+
+Sync-Workbench is a powerful workforce management solution designed to streamline and optimize employee operations. This API serves as the backend for managing employees, projects, and overall performance.
+
+## Features
+
+- **Role-Based Access Control (RBAC):** Define and manage roles (Admin, Manager, Employee, HR) with fine-grained permissions.
+- **Advanced Reporting & Analytics:** Generate reports on employee performance, attendance, and project involvement.
+- **Employee Performance Management:** Tools for goal setting, tracking, and evaluations with 360-degree feedback.
+- **Automated Onboarding & Offboarding:** Streamlined workflows for onboarding/offboarding employees.
+- **Time & Attendance Tracking:** Real-time attendance integration with leave and shift management.
+- **Project & Task Management Integration:** Assign projects, track tasks, and integrate with tools like Jira, Trello, etc.
+- **Skill & Certification Management:** Maintain skill databases, certification tracking, and renewal reminders.
+- **Internal Communication Tools:** Messaging, video conferencing, and collaboration spaces.
+- **Comprehensive Employee Profiles:** Profiles with personal info, job history, skills, and custom fields.
+- **Compliance & Document Management:** Secure storage for contracts, NDAs, and audit trails.
+- **Payroll & Benefits Management:** Payroll processing with tax calculations, benefits, and bonuses.
+- **Employee Self-Service Portal:** Self-service for personal info updates, leave requests, and pay slips.
+- **Custom Workflow Automation:** Automate repetitive tasks like leave approvals and expense claims.
+- **Multi-Department & Location Support:** Manage employees across multiple departments and locations.
+- **Integration with HR & IT Systems:** APIs for seamless integration with existing systems.
+- **Data Security & Privacy:** Robust encryption, role-based access, and GDPR compliance.
+- **Customization & Scalability:** Customizable dashboards, workflows, and scalable architecture.
 
 ---
-
-# Express TypeScript Boilerplate with ChatGPT reviews
-
-This repo can be used as a starting point for backend development with Nodejs. It comes bundled with Docker and is CI/CD optimized. The development environment uses `docker-compose` to start dependent services like mongo. There is [an action](https://github.com/sidhantpanda/docker-express-typescript-boilerplate/blob/master/.github/workflows/code-review.yml) to review all PRs with ChatGPT.
-
-A few things to note in the project:
-
-- **[Github Actions Workflows](https://github.com/sidhantpanda/docker-express-typescript-boilerplate/tree/master/.github/workflows)** - Pre-configured Github Actions to run automated builds and publish image to Github Packages.
-- **[Dockerfile](https://github.com/sidhantpanda/docker-express-typescript-boilerplate/blob/master/Dockerfile)** - Dockerfile to generate docker builds.
-- **[docker-compose](https://github.com/sidhantpanda/docker-express-typescript-boilerplate/blob/master/docker-compose.yml)** - Docker compose script to start service in production mode.
-- **[Containerized Mongo for development](#development)** - Starts a local mongo container with data persistence across runs.
-- **[Safe Mongooose Connection Helper](https://github.com/sidhantpanda/docker-express-typescript-boilerplate/blob/master/src/lib/safe-mongoose-connection.ts)** - A helper class to connect with Mongoose reliably.
-- **Joi** - For declarative payload validation
-- **[Middleware for easier async/await](https://github.com/sidhantpanda/docker-express-typescript-boilerplate/blob/master/src/middleware/request-middleware.ts)** - Catches errors from routes and throws them to express error handler to prevent app crash due to uncaught errors.
-- **[OpenAPI 3.0 Spec](https://github.com/sidhantpanda/docker-express-typescript-boilerplate/blob/master/openapi.yml)** - A starter template to get started with API documentation using OpenAPI 3.0. This API spec is also available when running the development server at `http://localhost:3000/dev/api-docs`
-- **[.env file for configuration](#environment)** - Change server config like app port, mongo url etc
-- **[Winston Logger](#logging)** - Uses winston as the logger for the application.
-- **ESLINT** - ESLINT is configured for linting.
-- **Jest** - Using Jest for running test cases
 
 ## I. Installation
 
-### Using `curl`
+**Using `curl`**
 
-```
-$ bash <(curl -s https://raw.githubusercontent.com/sidhantpanda/public/master/scripts/generate-express-ts-app.sh)
-```
-
-### Manual Method
-
-#### 1. Clone this repo
-
-```
-$ git clone git@github.com:sidhantpanda/docker-express-typescript-boilerplate.git your-app-name
-$ cd your-app-name
+```bash
+<(curl -s https://raw.githubusercontent.com/eaysin-arafat/sync-workbench-api/main/scripts/setup.sh)
 ```
 
-#### 2. Install dependencies
+**Manual Method**
+1. Clone the repository:
 
-```
-$ yarn install
-```
+   ```bash
+   git clone https://github.com/eaysin-arafat/sync-workbench-api.git
+   cd sync-workbench-api
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   yarn install
+   ```
 
 ## II. Configuration
 
-#### Update Docker repository for actions
-
-```
-$ yarn setup-actions
-```
+1. Create a .env file in the root directory:
+   ```bash
+   cp .env.example .env
+   ```
+2. Update the environment variables in .env:
+   ```dotenv
+   NODE_ENV="development"
+   PORT="3000"
+   DB_CONNECTION_URL="mongodb+srv://<your-username>:<your-password>@cluster.mongodb.net/"
+   ACCESS_TOKEN_SECRET="<your-access-token-secret>"
+   REFRESH_TOKEN_SECRET="<your-refresh-token-secret>"
+   ACCESS_TOKEN_EXPIRATION="15m"
+   REFRESH_TOKEN_EXPIRATION="7d"
+   ```
 
 ## III. Development
 
-### Start dev server
+Start the development server
 
-Starting the dev server also starts MongoDB as a service in a docker container using the compose script at `docker-compose.dev.yml`.
-
-```
-$ yarn dev
+```bash
+yarn dev
 ```
 
-Running the above commands results in
+This command starts the API server and a MongoDB container using docker-compose.
 
-- 🌏**API Server** running at `http://localhost:3000`
-- ⚙️**Swagger UI** at `http://localhost:3000/dev/api-docs`
-- 🛢️**MongoDB** running at `mongodb://localhost:27017`
+- 🌏 API Server: http://localhost:3000
+- ⚙️ Swagger UI: http://localhost:3000/dev/api-docs
+- 🛢️ MongoDB: mongodb://localhost:27017
 
-## IV. Packaging and Deployment
+## IV. Deployment
 
-The mongo container is only only available in dev environment. When you build and deploy the docker image, be sure to provide the correct **[environment variables](#environment)**.
+**Build and Run without Docker**
 
-#### 1. Build and run without Docker
-
-```
-$ yarn build && yarn start
+```bash
+yarn build && yarn start
 ```
 
-#### 2. Run with docker
+**Run with Docker**
 
-```
-$ docker build -t api-server .
-$ docker run -t -i \
-      --env NODE_ENV=production \
-      --env DB_CONNECTION_URL=mongodb://host.docker.internal:27017/books \
-      -p 3000:3000 \
-      api-server
-```
-
-#### 3. Run with docker-compose
-
-```
-$ docker-compose up
+```bash
+Copy code
+docker build -t sync-workbench-api .
+docker run -t -i \
+  --env NODE_ENV=production \
+  --env DB_CONNECTION_URL=mongodb://host.docker.internal:27017/employees \
+  -p 3000:3000 \
+  sync-workbench-api
 ```
 
----
+**Run with Docker Compose**
 
-## Environment
+```bash
+Copy code
+docker-compose up
+```
 
-To edit environment variables, create a file with name `.env` and copy the contents from `.env.default` to start with.
+## Environment Variables
 
-| Var Name          | Type   | Default                           | Description                            |
-| ----------------- | ------ | --------------------------------- | -------------------------------------- |
-| NODE_ENV          | string | `development`                     | API runtime environment. eg: `staging` |
-| PORT              | number | `3000`                            | Port to run the API server on          |
-| DB_CONNECTION_URL | string | `mongodb://localhost:27017/books` | URL for MongoDB                        |
+To configure the application, create a `.env` file in the root directory and copy the contents of `.env.default` as a starting point.
+
+Below are the available environment variables and their descriptions:
+
+| Variable Name              | Type   | Default Value                                              | Description                                              |
+| -------------------------- | ------ | ---------------------------------------------------------- | -------------------------------------------------------- |
+| `NODE_ENV`                 | string | `development`                                              | API runtime environment (e.g., `staging`, `production`). |
+| `PORT`                     | number | `3000`                                                     | The port on which the API server runs.                   |
+| `DB_CONNECTION_URL`        | string | `mongodb+srv://eaysinarafat:password@cluster.mongodb.net/` | MongoDB connection string.                               |
+| `DB_USERNAME`              | string | `eaysinarafat`                                             | Username for MongoDB authentication.                     |
+| `DB_PASSWORD`              | string | `password`                                                 | Password for MongoDB authentication.                     |
+| `APPLICATION_NAME`         | string | `sync-workbench`                                           | Name of the application.                                 |
+| `ACCESS_TOKEN_SECRET`      | string | `your-access-token-secret`                                 | Secret key used for signing JWT access tokens.           |
+| `REFRESH_TOKEN_SECRET`     | string | `your-refresh-token-secret`                                | Secret key used for signing JWT refresh tokens.          |
+| `ACCESS_TOKEN_EXPIRATION`  | string | `15m`                                                      | Expiration time for access tokens (e.g., `15m`, `1h`).   |
+| `REFRESH_TOKEN_EXPIRATION` | string | `7d`                                                       | Expiration time for refresh tokens (e.g., `7d`).         |
+
+### Notes:
+
+- Ensure that sensitive information like `DB_PASSWORD` and token secrets are kept secure and not exposed in your codebase.
+- Use environment-specific `.env` files for different deployment environments (e.g., `.env.staging`, `.env.production`).
 
 ## Logging
 
-The application uses [winston](https://github.com/winstonjs/winston) as the default logger. The configuration file is at `src/logger.ts`.
+The application uses Winston for logging. Logs are saved in ./logs and in /logs within the Docker container.
 
-- All logs are saved in `./logs` directory and at `/logs` in the docker container.
-- The `docker-compose` file has a volume attached to container to expose host directory to the container for writing logs.
-- Console messages are prettified
-- Each line in error log file is a stringified JSON.
+- Prettified console logs for development.
+- JSON-structured logs for production.
 
 ### Directory Structure
 
@@ -168,3 +182,24 @@ The application uses [winston](https://github.com/winstonjs/winston) as the defa
 +-- tsconfig.json
 +-- yarn.lock
 ```
+
+## Testing
+
+Run tests using Jest:
+
+```bash
+Copy code
+yarn test
+```
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+## Contributing
+
+Feel free to submit issues or pull requests on GitHub.
+
+## Contact
+
+For queries, please reach out to Eaysin Arafat via the repository's issue tracker.
