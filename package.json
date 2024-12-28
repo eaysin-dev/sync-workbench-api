@@ -12,14 +12,17 @@
   ],
   "author": "Eaysin Arafat",
   "main": "dist/index.js",
+  "_moduleAliases": {
+    "@": "dist"
+  },
   "scripts": {
     "postinstall": "chmod +x ./scripts/dev.sh",
     "setup-actions": "chmod +x ./scripts/setup-github-actions.sh; ./scripts/setup-github-actions.sh",
-    "build": "tsc",
-    "dev": "npx nodemon src/api/index.ts",
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
+    "dev": "nodemon -r tsconfig-paths/register src/index.ts",
     "dev-server": "NODE_ENV=development nodemon",
-    "ts-node-server": "ts-node src/api/index.ts",
-    "start": "npx nodemon src/api/index.ts",
+    "ts-node-server": "ts-node src/index.ts",
+    "start": "npx nodemon src/index.ts",
     "test": "jest"
   },
   "dependencies": {
@@ -69,6 +72,7 @@
     "ts-jest": "^29.2.5",
     "ts-node": "10.9.2",
     "ts-node-dev": "^2.0.0",
+    "tsc-alias": "^1.8.10",
     "typescript": "5.7.2",
     "typescript-eslint": "^8.18.2"
   },

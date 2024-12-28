@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { departmentsControllers } from "../controllers";
+import { departmentsControllers } from "../api";
 
 const departmentsRoutes = Router();
 

@@ -1,75 +1,13 @@
-import SafeMongooseConnection from "@/lib/safe-mongoose-connection";
-import logger from "@/logger";
-import { errorHandler } from "@/middleware/error-handler";
-import routes from "@/routes";
-import bodyParser from "body-parser";
-import compression from "compression";
-import cors from "cors";
 import dotenv from "dotenv";
-import express, { NextFunction, Request, Response } from "express";
-import path from "path";
-import util from "util";
 
-// Load environment variables
 const result = dotenv.config();
 if (result.error) dotenv.config({ path: ".env.default" });
 
-const app = express();
+import app from "@/app";
+import SafeMongooseConnection from "@/lib/safe-mongoose-connection";
+import logger from "@/logger";
+import util from "util";
 
-// CORS configuration
-const corsOptions = {
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-};
-
-// Middleware to log response time
-function logResponseTime(req: Request, res: Response, next: NextFunction) {
-  const startHrTime = process.hrtime();
-
-  res.on("finish", () => {
-    const elapsedHrTime = process.hrtime(startHrTime);
-    const elapsedTimeInMs = elapsedHrTime[0] * 1000 + elapsedHrTime[1] / 1e6;
-    const message = `${req.method} ${res.statusCode} ${elapsedTimeInMs}ms\t${req.path}`;
-    logger.log({
-      level: "debug",
-      message,
-      consoleLoggerOptions: { label: "API" },
-    });
-  });
-
-  next();
-}
-
-// Middleware setup
-app.use(logResponseTime);
-app.use(cors(corsOptions));
-app.use(compression() as any);
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// Static file serving
-app.use(express.static(path.join(__dirname, "..", "public")));
-
-// Root endpoint to serve HTML file
-app.get("/", (_req, res) => {
-  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
-});
-
-// Health check endpoint
-app.get("/health", (_req, res) => {
-  res
-    .status(200)
-    .json({ status: `${process.env.APPLICATION_NAME} service is up` });
-});
-
-// API routes
-app.use(routes);
-
-// Error handler middleware
-app.use(errorHandler);
-
-// Mongoose connection and app start logic
 const PORT = process.env.PORT || 3000;
 
 let debugCallback;
@@ -107,18 +45,18 @@ const safeMongooseConnection = new SafeMongooseConnection({
     logger.info(`Retrying to MongoDB at ${mongoUrl}`),
 });
 
-// Start server after DB connection
 const serve = () =>
   app.listen(PORT, () => {
     logger.info(`🌏 Express server started at http://localhost:${PORT}`);
+
     if (process.env.NODE_ENV === "development") {
+      // This route is only present in development mode
       logger.info(
         `⚙️  Swagger UI hosted at http://localhost:${PORT}/dev/api-docs`
       );
     }
   });
 
-// Check for DB connection URL and start the app
 if (process.env.DB_CONNECTION_URL == null) {
   logger.error(
     "DB_CONNECTION_URL not specified in environment",
@@ -132,7 +70,7 @@ if (process.env.DB_CONNECTION_URL == null) {
   });
 }
 
-// Graceful shutdown on SIGINT
+// Close the Mongoose connection, when receiving SIGINT
 process.on("SIGINT", async () => {
   console.log("\n");
   logger.info("Gracefully shutting down");

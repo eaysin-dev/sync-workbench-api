@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { rolePermissionsControllers } from "../controllers";
+import { rolePermissionsControllers } from "../api";
 
 const rolePermissionsRoutes = Router();
 

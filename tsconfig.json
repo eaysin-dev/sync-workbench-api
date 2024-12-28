@@ -17,11 +17,8 @@
     "noImplicitAny": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "declaration": true
+    "skipLibCheck": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.test.ts", "**/*.spec.ts", "__tests__"]
+  "include": ["./src/**/*", "__tests__", "errors", "public", "__tests__"],
+  "exclude": ["**/__tests__/**", "**/*.test.ts", "**/*.spec.ts", "node_modules"]
 }
