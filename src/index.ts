@@ -8,7 +8,7 @@ import SafeMongooseConnection from "@/lib/safe-mongoose-connection";
 import logger from "@/logger";
 import util from "util";
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 let debugCallback;
 if (process.env.NODE_ENV === "development") {
