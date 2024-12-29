@@ -1,33 +1,23 @@
 // utils/employeeUtils.ts
 
 import Employee from "@/models/Employee";
-import {
-  employeeGetByIdSchema,
-  EmployeeGetByIdSchemaType,
-} from "@/schemas/employee/get-by-id-queries";
-import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
-import { log } from "console";
+import { IdWithPopulateType } from "@/types/quert";
+import { generateErrorResponse, notFoundError } from "@/utils";
 
-const getByUserId = async (data: EmployeeGetByIdSchemaType) => {
-  const { id, populate } = validateSchemas(data, employeeGetByIdSchema);
+const getByUserId = async ({ id, populate }: IdWithPopulateType) => {
+  const query = Employee.findOne({ user: id });
 
-  try {
-    const employee = await Employee.findOne({ user: id });
-    log(employee);
-    if (!employee)
-      throw generateErrorResponse({
-        ...notFoundError,
-        message: `Employee not found for user with ID ${id}`,
-      });
+  if (populate) query.populate(populate);
+  const employee = await query;
 
-    return { employee };
-  } catch (error) {
-    console.error(`Error fetching employee for user ${id}:`, error);
+  if (!employee) {
     throw generateErrorResponse({
       ...notFoundError,
-      message: `Failed to fetch employee for user ${id}`,
+      message: `Employee not found for user with ID ${id}`,
     });
   }
+
+  return { employee: employee.toObject() };
 };
 
 export default getByUserId;

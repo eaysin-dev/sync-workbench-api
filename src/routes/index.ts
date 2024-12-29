@@ -4,7 +4,6 @@ import yaml from "js-yaml";
 import path from "path";
 import swaggerUi from "swagger-ui-express";
 import authRoutes from "./auth";
-import booksRoutes from "./books";
 import employeesRoutes from "./employees";
 import permissionsRoutes from "./permissions";
 import rolePermissionsRoutes from "./rolePermissions";
@@ -18,7 +17,6 @@ const SWAGGER_YAML_FILEPATH = path.join(__dirname, "../../openapi.yml");
 
 const router = Router();
 
-router.use("/book", booksRoutes);
 router.use("/users", usersRoutes);
 router.use("/auth", authRoutes);
 router.use("/employees", employeesRoutes);

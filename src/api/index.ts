@@ -1,5 +1,4 @@
 export * as authControllers from "./authentication";
-export * as booksControllers from "./book";
 export * as departmentsControllers from "./departments";
 export * as employeeControllers from "./employees";
 export * as permissionsControllers from "./permissions";

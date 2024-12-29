@@ -2,13 +2,26 @@ import defaultConfig from "@/config/default";
 import { employeeService } from "@/lib";
 import { requestMiddleware } from "@/middleware/request-middleware";
 import { createPopulateSchema } from "@/schemas/shared/expend";
-import { idSchema } from "@/schemas/shared/id";
+import { paramsIdSchema, ParamsIdSchemaType } from "@/schemas/shared/id";
+import { parsePopulate } from "@/utils/parse-populate";
 import { NextFunction, Request, Response } from "express";
+import { z } from "zod";
 
-const getById = async (req: Request, res: Response, next: NextFunction) => {
+const employeePopulateSchema = createPopulateSchema(
+  defaultConfig.employeeExpendEnum
+).optional();
+
+export type EmployeePopulateSchemaType = z.infer<typeof employeePopulateSchema>;
+
+const getById = async (
+  req: Request<ParamsIdSchemaType, {}, {}, { populate: string }>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const values = { id: req.params.id, populate: req.query.populate };
-    const { id, populate } = values;
+    const { id } = req.params;
+    const populateInput = req.query.populate as string | undefined;
+    const populate = parsePopulate(populateInput);
 
     const { employee } = await employeeService.getById({ id, populate });
 
@@ -26,7 +39,7 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
 
 export default requestMiddleware(getById, {
   validation: {
-    body: idSchema,
-    query: createPopulateSchema(defaultConfig.employeeExpendEnum).optional(),
+    body: paramsIdSchema,
+    query: employeePopulateSchema,
   },
 });

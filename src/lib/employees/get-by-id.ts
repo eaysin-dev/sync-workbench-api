@@ -1,14 +1,12 @@
 import Employee from "@/models/Employee";
-import {
-  employeeGetByIdSchema,
-  EmployeeGetByIdSchemaType,
-} from "@/schemas/employee/get-by-id-queries";
-import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
+import { IdWithPopulateType } from "@/types/quert";
+import { generateErrorResponse, notFoundError } from "@/utils";
 
-const getById = async (data: EmployeeGetByIdSchemaType) => {
-  const payload = validateSchemas(data, employeeGetByIdSchema);
+const getById = async ({ id, populate }: IdWithPopulateType) => {
+  const employeeQuery = Employee.findById(id);
 
-  const employee = await Employee.findById(payload.id).populate(payload.expend);
+  if (populate) employeeQuery.populate(populate);
+  const employee = await employeeQuery;
 
   if (!employee) throw generateErrorResponse(notFoundError);
 
