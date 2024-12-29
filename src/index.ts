@@ -47,13 +47,11 @@ const safeMongooseConnection = new SafeMongooseConnection({
 
 const serve = () =>
   app.listen(PORT, () => {
-    logger.info(`🌏 Express server started at http://localhost:${PORT}`);
+    logger.info(`EXPRESS server started at http://localhost:${PORT}`);
 
     if (process.env.NODE_ENV === "development") {
       // This route is only present in development mode
-      logger.info(
-        `⚙️  Swagger UI hosted at http://localhost:${PORT}/dev/api-docs`
-      );
+      logger.info(`SWAGGER UI hosted at http://localhost:${PORT}/dev/api-docs`);
     }
   });
 
