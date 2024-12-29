@@ -1,7 +1,7 @@
 import { authenticateService } from "@/lib";
 import { requestMiddleware } from "@/middleware/request-middleware";
 import { NextFunction, Request, Response } from "express";
-import { userSchema, UserSchemaType } from "./../../schemas/user/index";
+import { userSchema, UserSchemaType } from "../../schemas/user";
 
 const register = async (
   req: Request<{}, {}, UserSchemaType>,

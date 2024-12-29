@@ -1,6 +1,6 @@
 import { employeeService } from "@/lib";
 import { requestMiddleware } from "@/middleware/request-middleware";
-import { employeeSchema, EmployeeSchemaType } from "@/schemas";
+import { employeeSchema, EmployeeSchemaType } from "@/schemas/employee";
 import { NextFunction, Request, Response } from "express";
 import { paramsIdSchema, ParamsIdSchemaType } from "./../../schemas/shared/id";
 

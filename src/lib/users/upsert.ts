@@ -1,21 +1,19 @@
 import User from "@/models/User";
-import { updateUserSchema, UserSchemaType } from "@/schemas";
-import { idSchema, IdSchemaType } from "@/schemas/shared/id";
-import { validateSchemas } from "@/utils";
+import { IdSchemaType } from "@/schemas/shared/id";
+import { UserSchemaType } from "@/schemas/user";
 
-const upsert = async (identity: IdSchemaType, data: UserSchemaType) => {
-  const id = validateSchemas(identity, idSchema);
-  const userData = validateSchemas(data, updateUserSchema);
+const upsert = async (id: IdSchemaType, data: UserSchemaType) => {
+  const { email, role, status, username } = data;
 
   let user = await User.findById(id).select("-password");
 
   if (!user) {
-    user = new User(userData);
+    user = new User({ email, role, status, username });
     await user.save();
     return { user: user.toObject(), statusCode: 201 };
   }
 
-  user.overwrite(userData);
+  user.overwrite({ email, role, status, username });
   await user.save();
 
   return { user: user.toObject(), statusCode: 200 };

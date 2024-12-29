@@ -1,12 +1,8 @@
 import { RolePermission } from "@/models/RolePermission";
-import {
-  rolePermissionSchema,
-  RolePermissionSchemaType,
-} from "@/schemas/role-permission";
-import { validateSchemas } from "@/utils";
+import { RolePermissionSchemaType } from "@/schemas/role-permission";
 
 const create = async (data: RolePermissionSchemaType) => {
-  const { permission, role } = validateSchemas(data, rolePermissionSchema);
+  const { permission, role } = data;
 
   const rolePermission = new RolePermission({
     role,

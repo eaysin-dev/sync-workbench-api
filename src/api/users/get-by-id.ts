@@ -2,10 +2,15 @@ import defaultConfig from "@/config/default";
 import { userService } from "@/lib";
 import { requestMiddleware } from "@/middleware/request-middleware";
 import { createPopulateSchema } from "@/schemas/shared/expend";
-import { paramsIdSchema } from "@/schemas/shared/id";
+import { paramsIdSchema, ParamsIdSchemaType } from "@/schemas/shared/id";
+import { UserPopulateSchemaType } from "@/schemas/user";
 import { NextFunction, Request, Response } from "express";
 
-const getById = async (req: Request, res: Response, next: NextFunction) => {
+const getById = async (
+  req: Request<ParamsIdSchemaType, {}, {}, UserPopulateSchemaType>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const values = { id: req.params.id, populate: req.query.populate };
     const { id, populate } = values;

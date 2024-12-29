@@ -7,14 +7,16 @@ import { parsePopulate } from "@/utils/parse-populate";
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
-const employeePopulateSchema = createPopulateSchema(
-  defaultConfig.employeeExpendEnum
-).optional();
+const employeePopulateSchema = z.object({
+  populate: createPopulateSchema(
+    defaultConfig.allowEmployeePopulateFields
+  ).optional(),
+});
 
-export type EmployeePopulateSchemaType = z.infer<typeof employeePopulateSchema>;
+type EmployeePopulateSchemaType = z.infer<typeof employeePopulateSchema>;
 
 const getById = async (
-  req: Request<ParamsIdSchemaType, {}, {}, { populate: string }>,
+  req: Request<ParamsIdSchemaType, {}, {}, EmployeePopulateSchemaType>,
   res: Response,
   next: NextFunction
 ) => {

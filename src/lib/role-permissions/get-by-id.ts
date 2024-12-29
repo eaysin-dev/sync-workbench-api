@@ -1,17 +1,12 @@
 import { RolePermission } from "@/models/RolePermission";
-import {
-  rolePermissionGetByIdSchema,
-  RolePermissionGetByIdSchemaType,
-} from "@/schemas/role-permission";
-import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
+import { IdWithPopulateType } from "@/types/quert";
+import { generateErrorResponse, notFoundError } from "@/utils";
 
-const getById = async (data: RolePermissionGetByIdSchemaType) => {
-  const payload = validateSchemas(data, rolePermissionGetByIdSchema);
+const getById = async ({ id, populate }: IdWithPopulateType) => {
+  const query = RolePermission.findById(id);
+  if (populate) query.populate(populate);
 
-  const rolePermission = await RolePermission.findById(payload.id).populate(
-    payload.expend
-  );
-
+  const rolePermission = await query;
   if (!rolePermission) throw generateErrorResponse(notFoundError);
 
   return { rolePermission: rolePermission.toObject() };

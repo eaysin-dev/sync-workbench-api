@@ -1,19 +1,15 @@
 import User from "@/models/User";
-import { updateUserSchema, UpdateUserSchemaType } from "@/schemas";
-import { idSchema, IdSchemaType } from "@/schemas/shared/id";
-import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
+import { IdSchemaType } from "@/schemas/shared/id";
+import { UpdateUserSchemaType } from "@/schemas/user";
+import { generateErrorResponse, notFoundError } from "@/utils";
 
-const partialUpdate = async (
-  identity: IdSchemaType,
-  data: UpdateUserSchemaType
-) => {
-  const id = validateSchemas(identity, idSchema);
-  const userData = validateSchemas(data, updateUserSchema);
+const partialUpdate = async (id: IdSchemaType, data: UpdateUserSchemaType) => {
+  const { email, role, status, username } = data;
 
   const user = await User.findById(id).select("-password");
   if (!user) generateErrorResponse(notFoundError);
 
-  user?.set(userData);
+  user?.set({ email, role, status, username });
   await user?.save();
 
   return user?.toObject();

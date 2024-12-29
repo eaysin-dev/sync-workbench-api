@@ -1,5 +1,5 @@
 import User from "@/models/User";
-import { UsersGetAllQuerySchemaType } from "@/schemas";
+import { UsersGetAllQuerySchemaType } from "@/schemas/user";
 import {
   preparePagination,
   prepareSearchQuery,

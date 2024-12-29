@@ -1,5 +1,5 @@
 import Employee from "@/models/Employee";
-import { EmployeeQueryType } from "@/schemas/employee/get-all-queries";
+import { EmployeeQueryType } from "@/schemas/employee";
 import {
   preparePagination,
   prepareSearchQuery,

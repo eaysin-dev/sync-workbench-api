@@ -1,7 +1,7 @@
 import { userService } from "@/lib";
 import { requestMiddleware } from "@/middleware/request-middleware";
-import { updateUserSchema, UpdateUserSchemaType } from "@/schemas";
 import { paramsIdSchema, ParamsIdSchemaType } from "@/schemas/shared/id";
+import { updateUserSchema, UpdateUserSchemaType } from "@/schemas/user";
 import { NextFunction, Request, Response } from "express";
 
 const partialUpdate = async (

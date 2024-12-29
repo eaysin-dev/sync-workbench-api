@@ -1,11 +1,8 @@
 import User from "@/models/User";
-import { userGetByIdSchema, UserGetByIdSchemaType } from "@/schemas";
-import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
+import { IdWithPopulateType } from "@/types/quert";
+import { generateErrorResponse, notFoundError } from "@/utils";
 
-const getById = async (data: UserGetByIdSchemaType) => {
-  const { id, populate } = validateSchemas(data, userGetByIdSchema);
-  console.log(populate);
-
+const getById = async ({ id, populate }: IdWithPopulateType) => {
   const userQuery = User.findById(id).select("-password");
 
   if (populate) userQuery.populate(populate);

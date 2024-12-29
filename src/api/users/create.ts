@@ -1,6 +1,6 @@
 import { userService } from "@/lib";
 import { requestMiddleware } from "@/middleware/request-middleware";
-import { userSchema, UserSchemaType } from "@/schemas";
+import { userSchema, UserSchemaType } from "@/schemas/user";
 import { NextFunction, Request, Response } from "express";
 
 const create = async (

@@ -1,22 +1,18 @@
 import { RolePermission } from "@/models/RolePermission";
-import {
-  rolePermissionSchema,
-  RolePermissionSchemaType,
-} from "@/schemas/role-permission";
-import { idSchema, IdSchemaType } from "@/schemas/shared/id";
-import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
+import { RolePermissionSchemaType } from "@/schemas/role-permission";
+import { IdSchemaType } from "@/schemas/shared/id";
+import { generateErrorResponse, notFoundError } from "@/utils";
 
 const partialUpdate = async (
-  identity: IdSchemaType,
+  id: IdSchemaType,
   data: RolePermissionSchemaType
 ) => {
-  const id = validateSchemas(identity, idSchema);
-  const rolePermissionData = validateSchemas(data, rolePermissionSchema);
+  const { permission, role } = data;
   const rolePermission = await RolePermission.findById(id);
 
   if (!rolePermission) generateErrorResponse(notFoundError);
 
-  rolePermission?.set(rolePermissionData);
+  rolePermission?.set({ permission, role });
   await rolePermission?.save();
 
   return rolePermission?.toObject();

@@ -1,9 +1,7 @@
+import defaultConfig from "@/config/default";
 import { z, ZodSchema } from "zod";
-import { createPopulateSchema } from "../shared/expend";
-import { getAllQuerySchema } from "../shared/get-all-queries";
-import { idSchema } from "../shared/id";
-
-export const rolePermissionExpendEnum = ["role", "permission"];
+import { createPopulateSchema } from "./shared/expend";
+import { getAllQuerySchema } from "./shared/get-all-queries";
 
 export const rolePermissionSchema = z.object({
   role: z.string().min(1, { message: "Role ID is required" }),
@@ -13,7 +11,9 @@ export const rolePermissionSchema = z.object({
 export type RolePermissionSchemaType = z.infer<typeof rolePermissionSchema>;
 
 export const rolePermissionQuerySchema: ZodSchema = getAllQuerySchema.extend({
-  populate: createPopulateSchema(rolePermissionExpendEnum),
+  populate: createPopulateSchema(
+    defaultConfig.allowedRolePermissionPopulateFields
+  ),
 });
 
 export type RolePermissionQuerySchemaType = z.infer<
@@ -21,10 +21,11 @@ export type RolePermissionQuerySchemaType = z.infer<
 >;
 
 export const rolePermissionGetByIdSchema: ZodSchema = z.object({
-  id: idSchema,
-  populate: createPopulateSchema(rolePermissionExpendEnum).optional(),
+  populate: createPopulateSchema(
+    defaultConfig.allowedRolePermissionPopulateFields
+  ).optional(),
 });
 
-export type RolePermissionGetByIdSchemaType = z.infer<
+export type RolePermissionPopulateSchemaType = z.infer<
   typeof rolePermissionGetByIdSchema
 >;

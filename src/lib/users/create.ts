@@ -1,4 +1,4 @@
-import { UserSchemaType } from "@/schemas";
+import { UserSchemaType } from "@/schemas/user";
 import { createUserWithEmployee } from "./utils";
 
 const create = async (data: UserSchemaType) => {

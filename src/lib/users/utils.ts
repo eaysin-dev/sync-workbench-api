@@ -1,7 +1,7 @@
 import defaultConfig from "@/config/default";
 import User from "@/models/User";
-import { userSchema, UserSchemaType } from "@/schemas";
-import { conflictError, generateErrorResponse, validateSchemas } from "@/utils";
+import { UserSchemaType } from "@/schemas/user";
+import { conflictError, generateErrorResponse } from "@/utils";
 import {
   createEmptyEmployeeForUser,
   removeEmployeeByUserId,
@@ -26,10 +26,7 @@ const userExist = async (username: string) => {
 };
 
 const createUser = async (data: UserSchemaType) => {
-  const { email, password, role, username, status } = validateSchemas(
-    data,
-    userSchema
-  );
+  const { email, password, role, username, status } = data;
 
   const existingEmailUser = await User.findOne({ email });
   if (existingEmailUser)

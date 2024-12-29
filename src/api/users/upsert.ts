@@ -1,7 +1,7 @@
 import { userService } from "@/lib";
 import { requestMiddleware } from "@/middleware/request-middleware";
-import { userSchema, UserSchemaType } from "@/schemas";
 import { paramsIdSchema, ParamsIdSchemaType } from "@/schemas/shared/id";
+import { userSchema, UserSchemaType } from "@/schemas/user";
 import { NextFunction, Request, Response } from "express";
 
 const upsert = async (

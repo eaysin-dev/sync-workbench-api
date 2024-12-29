@@ -1,5 +1,5 @@
 import Employee from "@/models/Employee";
-import { EmployeeSchemaType } from "@/schemas";
+import { EmployeeSchemaType } from "@/schemas/employee";
 
 const create = async (data: EmployeeSchemaType) => {
   const {

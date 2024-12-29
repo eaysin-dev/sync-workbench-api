@@ -1,6 +1,6 @@
 import Employee from "@/models/Employee";
-import { employeePartialSchema, EmployeePartialSchemaType } from "@/schemas";
-import { conflictError, generateErrorResponse, validateSchemas } from "@/utils";
+import { EmployeePartialSchemaType } from "@/schemas/employee";
+import { conflictError, generateErrorResponse } from "@/utils";
 import mongoose from "mongoose";
 
 const create = async (data: EmployeePartialSchemaType) => {
@@ -24,7 +24,7 @@ const create = async (data: EmployeePartialSchemaType) => {
     job_title,
     manager,
     skills,
-  } = validateSchemas(data, employeePartialSchema);
+  } = data;
 
   if (!user) {
     throw generateErrorResponse({

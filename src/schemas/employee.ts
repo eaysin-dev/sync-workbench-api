@@ -1,4 +1,7 @@
-import { z } from "zod";
+import defaultConfig from "@/config/default";
+import { z, ZodSchema } from "zod";
+import { createPopulateSchema } from "./shared/expend";
+import { getAllQuerySchema } from "./shared/get-all-queries";
 
 export const employeeSchema = z.object({
   user: z.string().min(1, { message: "User ID is required" }),
@@ -43,3 +46,17 @@ export const employeePartialSchema = employeeSchema.partial();
 
 export type EmployeeSchemaType = z.infer<typeof employeeSchema>;
 export type EmployeePartialSchemaType = z.infer<typeof employeePartialSchema>;
+
+export const employeeQuerySchema: ZodSchema = getAllQuerySchema.extend({
+  populate: createPopulateSchema(defaultConfig?.allowEmployeePopulateFields),
+});
+
+export type EmployeeQueryType = z.infer<typeof employeeQuerySchema>;
+
+export const employeePopulateSchema: ZodSchema = z.object({
+  populate: createPopulateSchema(
+    defaultConfig.allowEmployeePopulateFields
+  ).optional(),
+});
+
+export type EmployeePopulateSchemaType = z.infer<typeof employeePopulateSchema>;

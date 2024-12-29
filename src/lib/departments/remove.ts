@@ -1,10 +1,8 @@
 import Employee from "@/models/Employee";
-import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
-import { idSchema, IdSchemaType } from "./../../schemas/shared/id";
+import { generateErrorResponse, notFoundError } from "@/utils";
+import { IdSchemaType } from "./../../schemas/shared/id";
 
-const remove = async (identity: IdSchemaType) => {
-  const id = validateSchemas(identity, idSchema);
-
+const remove = async (id: IdSchemaType) => {
   const employee = await Employee.findById(id);
   if (!employee) throw generateErrorResponse(notFoundError);
 

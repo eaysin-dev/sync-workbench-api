@@ -1,5 +1,4 @@
-import { userSchema, UserSchemaType } from "@/schemas";
-import { validateSchemas } from "@/utils";
+import { UserSchemaType } from "@/schemas/user";
 import { conflictError, generateErrorResponse } from "@/utils/errors";
 import { generateHash } from "@/utils/hashing";
 import { generateToken } from "../tokens";
@@ -7,8 +6,7 @@ import { userExist } from "../users";
 import { createUserWithEmployee } from "../users/utils";
 
 const register = async (data: UserSchemaType) => {
-  const payload = validateSchemas(data, userSchema) as UserSchemaType;
-  const { email, password, role, status, username } = payload;
+  const { email, password, role, status, username } = data;
 
   const hasUser = await userExist(username);
   if (hasUser)

@@ -5,7 +5,7 @@ import {
   prepareSearchQuery,
   prepareSortOptions,
 } from "@/utils/queries";
-import { RolePermissionQuerySchemaType } from "./../../schemas/role-permission/index";
+import { RolePermissionQuerySchemaType } from "../../schemas/role-permission";
 
 const allowedExpendFields = ["role", "permission"];
 

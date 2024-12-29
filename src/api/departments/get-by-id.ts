@@ -1,13 +1,14 @@
 import defaultConfig from "@/config/default";
 import { employeeService } from "@/lib";
 import { requestMiddleware } from "@/middleware/request-middleware";
+import { EmployeePopulateSchemaType } from "@/schemas/employee";
 import { createPopulateSchema } from "@/schemas/shared/expend";
 import { paramsIdSchema, ParamsIdSchemaType } from "@/schemas/shared/id";
 import { parsePopulate } from "@/utils/parse-populate";
 import { NextFunction, Request, Response } from "express";
 
 const getById = async (
-  req: Request<ParamsIdSchemaType, {}, {}, { populate: string }>,
+  req: Request<ParamsIdSchemaType, {}, {}, EmployeePopulateSchemaType>,
   res: Response,
   next: NextFunction
 ) => {
@@ -36,6 +37,8 @@ const getById = async (
 export default requestMiddleware(getById, {
   validation: {
     body: paramsIdSchema,
-    query: createPopulateSchema(defaultConfig.employeeExpendEnum).optional(),
+    query: createPopulateSchema(
+      defaultConfig.allowEmployeePopulateFields
+    ).optional(),
   },
 });

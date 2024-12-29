@@ -1,21 +1,19 @@
 import { Role } from "@/models/Role";
-import { roleSchema, RoleSchemaType } from "@/schemas/role";
-import { idSchema, IdSchemaType } from "@/schemas/shared/id";
-import { validateSchemas } from "@/utils";
+import { RoleSchemaType } from "@/schemas/role";
+import { IdSchemaType } from "@/schemas/shared/id";
 
-const upsert = async (identity: IdSchemaType, data: RoleSchemaType) => {
-  const id = validateSchemas(identity, idSchema);
-  const roleData = validateSchemas(data, roleSchema);
+const upsert = async (id: IdSchemaType, data: RoleSchemaType) => {
+  const { name, description } = data;
 
   let role = await Role.findById(id);
 
   if (!role) {
-    role = new Role(roleData);
+    role = new Role({ name, description });
     await role.save();
     return { employee: role.toObject(), statusCode: 201 };
   }
 
-  role.overwrite(roleData);
+  role.overwrite({ name, description });
   await role.save();
 
   return { role: role.toObject(), statusCode: 200 };

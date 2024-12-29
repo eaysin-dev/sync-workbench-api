@@ -1,16 +1,15 @@
 import { Role } from "@/models/Role";
-import { roleSchema, RoleSchemaType } from "@/schemas/role";
-import { idSchema, IdSchemaType } from "@/schemas/shared/id";
-import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
+import { RoleSchemaType } from "@/schemas/role";
+import { IdSchemaType } from "@/schemas/shared/id";
+import { generateErrorResponse, notFoundError } from "@/utils";
 
-const partialUpdate = async (identity: IdSchemaType, data: RoleSchemaType) => {
-  const id = validateSchemas(identity, idSchema);
-  const roleData = validateSchemas(data, roleSchema);
+const partialUpdate = async (id: IdSchemaType, data: RoleSchemaType) => {
+  const { name, description } = data;
+
   const role = await Role.findById(id);
-
   if (!role) generateErrorResponse(notFoundError);
 
-  role?.set(roleData);
+  role?.set({ name, description });
   await role?.save();
 
   return role?.toObject();

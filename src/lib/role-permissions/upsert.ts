@@ -1,27 +1,19 @@
 import { RolePermission } from "@/models/RolePermission";
-import {
-  rolePermissionSchema,
-  RolePermissionSchemaType,
-} from "@/schemas/role-permission";
-import { idSchema, IdSchemaType } from "@/schemas/shared/id";
-import { validateSchemas } from "@/utils";
+import { RolePermissionSchemaType } from "@/schemas/role-permission";
+import { IdSchemaType } from "@/schemas/shared/id";
 
-const upsert = async (
-  identity: IdSchemaType,
-  data: RolePermissionSchemaType
-) => {
-  const id = validateSchemas(identity, idSchema);
-  const rolePermissionData = validateSchemas(data, rolePermissionSchema);
+const upsert = async (id: IdSchemaType, data: RolePermissionSchemaType) => {
+  const { permission, role } = data;
 
   let rolePermission = await RolePermission.findById(id);
 
   if (!rolePermission) {
-    rolePermission = new RolePermission(rolePermissionData);
+    rolePermission = new RolePermission({ permission, role });
     await rolePermission.save();
     return { rolePermission: rolePermission.toObject(), statusCode: 201 };
   }
 
-  rolePermission.overwrite(rolePermissionData);
+  rolePermission.overwrite({ permission, role });
   await rolePermission.save();
 
   return { rolePermission: rolePermission.toObject(), statusCode: 200 };

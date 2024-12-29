@@ -5,9 +5,10 @@ const defaultConfig = Object.freeze({
     "/api/v1/auth/refresh-token",
     "/docs",
   ],
-  allowedUserPopulateFields: ["role"],
   allowUserRoles: ["hr", "admin", "manager", "employee"],
-  employeeExpendEnum: [""],
+  allowedUserPopulateFields: ["role"],
+  allowedRolePermissionPopulateFields: ["role", "permission"],
+  allowEmployeePopulateFields: [""],
 });
 
 export default defaultConfig;

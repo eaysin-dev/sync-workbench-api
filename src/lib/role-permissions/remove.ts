@@ -1,10 +1,8 @@
 import { RolePermission } from "@/models/RolePermission";
-import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
-import { idSchema, IdSchemaType } from "./../../schemas/shared/id";
+import { generateErrorResponse, notFoundError } from "@/utils";
+import { IdSchemaType } from "./../../schemas/shared/id";
 
-const remove = async (identity: IdSchemaType) => {
-  const id = validateSchemas(identity, idSchema);
-
+const remove = async (id: IdSchemaType) => {
   const rolePermission = await RolePermission.findById(id);
   if (!rolePermission) throw generateErrorResponse(notFoundError);
 

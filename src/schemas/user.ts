@@ -1,8 +1,7 @@
 import defaultConfig from "@/config/default";
 import { z, ZodSchema } from "zod";
-import { createPopulateSchema } from "../shared/expend";
-import { getAllQuerySchema } from "../shared/get-all-queries";
-import { idSchema } from "../shared/id";
+import { createPopulateSchema } from "./shared/expend";
+import { getAllQuerySchema } from "./shared/get-all-queries";
 
 /**
  * Base schema for user data validation.
@@ -65,9 +64,8 @@ export type UsersGetAllQuerySchemaType = z.infer<typeof usersGetAllQuerySchema>;
  * Requires a valid user ID and optionally allows population of specific fields.
  */
 export const userGetByIdSchema: ZodSchema = z.object({
-  id: idSchema,
   populate: createPopulateSchema(
     defaultConfig.allowedUserPopulateFields
   ).optional(),
 });
-export type UserGetByIdSchemaType = z.infer<typeof userGetByIdSchema>;
+export type UserPopulateSchemaType = z.infer<typeof userGetByIdSchema>;

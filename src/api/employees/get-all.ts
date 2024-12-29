@@ -1,9 +1,6 @@
 import { employeeService } from "@/lib";
 import { requestMiddleware } from "@/middleware/request-middleware";
-import {
-  employeeQuerySchema,
-  EmployeeQueryType,
-} from "@/schemas/employee/get-all-queries";
+import { employeeQuerySchema, EmployeeQueryType } from "@/schemas/employee";
 import { NextFunction, Request, Response } from "express";
 
 const getAll = async (

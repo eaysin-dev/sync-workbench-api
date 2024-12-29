@@ -1,19 +1,18 @@
 import { Permission } from "@/models/Permission";
-import { permissionSchema, PermissionSchemaType } from "@/schemas/permission";
-import { idSchema, IdSchemaType } from "@/schemas/shared/id";
-import { generateErrorResponse, notFoundError, validateSchemas } from "@/utils";
+import { PermissionSchemaType } from "@/schemas/permission";
+import { IdSchemaType } from "@/schemas/shared/id";
+import { generateErrorResponse, notFoundError } from "@/utils";
 
 const partialUpdate = async (
-  identity: IdSchemaType,
-  data: PermissionSchemaType
+  id: IdSchemaType,
+  payload: PermissionSchemaType
 ) => {
-  const id = validateSchemas(identity, idSchema);
-  const permissionData = validateSchemas(data, permissionSchema);
-  const permission = await Permission.findById(id);
+  const { action, resource, description } = payload;
 
+  const permission = await Permission.findById(id);
   if (!permission) generateErrorResponse(notFoundError);
 
-  permission?.set(permissionData);
+  permission?.set({ action, resource, description });
   await permission?.save();
 
   return permission?.toObject();
