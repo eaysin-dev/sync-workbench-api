@@ -1,5 +1,5 @@
 import { authenticateService } from "@/lib";
-import requestMiddleware from "@/middleware/request-middleware";
+import { requestMiddleware } from "@/middleware/request-middleware";
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { z } from "zod";
 

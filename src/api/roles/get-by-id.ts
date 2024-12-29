@@ -1,11 +1,15 @@
 import { rolesService } from "@/lib";
-import { idSchema } from "@/schemas/shared/id";
-import { validateSchemas } from "@/utils";
+import { requestMiddleware } from "@/middleware/request-middleware";
+import { paramsIdSchema, ParamsIdSchemaType } from "@/schemas/shared/id";
 import { NextFunction, Request, Response } from "express";
 
-const getById = async (req: Request, res: Response, next: NextFunction) => {
+const getById = async (
+  req: Request<ParamsIdSchemaType>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const id = validateSchemas(req.params.id, idSchema);
+    const id = req.params.id;
 
     const { role } = await rolesService.getById(id);
 
@@ -21,4 +25,6 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default getById;
+export default requestMiddleware(getById, {
+  validation: { query: paramsIdSchema },
+});

@@ -7,6 +7,7 @@ const defaultConfig = Object.freeze({
   ],
   allowedUserPopulateFields: ["role"],
   allowUserRoles: ["hr", "admin", "manager", "employee"],
+  employeeExpendEnum: [""],
 });
 
 export default defaultConfig;

@@ -1,19 +1,23 @@
 import { permissionsService } from "@/lib";
-import { permissionSchema } from "@/schemas/permission";
-import { idSchema } from "@/schemas/shared/id";
-import { validateSchemas } from "@/utils";
+import { requestMiddleware } from "@/middleware/request-middleware";
+import { permissionSchema, PermissionSchemaType } from "@/schemas/permission";
+import { paramsIdSchema, ParamsIdSchemaType } from "@/schemas/shared/id";
 import { NextFunction, Request, Response } from "express";
 
 const partialUpdate = async (
-  req: Request,
+  req: Request<ParamsIdSchemaType, {}, PermissionSchemaType>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const id = validateSchemas(req.params.id, idSchema);
-    const data = validateSchemas(req.body, permissionSchema);
+    const id = req.params.id;
+    const { action, resource, description } = req.body;
 
-    const permission = await permissionsService.partialUpdate(id, data);
+    const permission = await permissionsService.partialUpdate(id, {
+      action,
+      resource,
+      description,
+    });
 
     res.status(200).json({
       status: "success",
@@ -27,4 +31,6 @@ const partialUpdate = async (
   }
 };
 
-export default partialUpdate;
+export default requestMiddleware(partialUpdate, {
+  validation: { params: paramsIdSchema, body: permissionSchema },
+});

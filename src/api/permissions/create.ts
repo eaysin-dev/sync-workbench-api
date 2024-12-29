@@ -1,13 +1,21 @@
 import { permissionsService } from "@/lib";
-import { permissionSchema } from "@/schemas/permission";
-import { validateSchemas } from "@/utils";
+import { requestMiddleware } from "@/middleware/request-middleware";
+import { permissionSchema, PermissionSchemaType } from "@/schemas/permission";
 import { NextFunction, Request, Response } from "express";
 
-const create = async (req: Request, res: Response, next: NextFunction) => {
+const create = async (
+  req: Request<{}, {}, PermissionSchemaType>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const data = validateSchemas(req.body, permissionSchema);
+    const { action, resource, description } = req.body;
 
-    const permission = await permissionsService.create(data);
+    const permission = await permissionsService.create({
+      action,
+      resource,
+      description,
+    });
 
     const response = {
       status: "success",
@@ -23,4 +31,6 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default create;
+export default requestMiddleware(create, {
+  validation: { body: permissionSchema },
+});

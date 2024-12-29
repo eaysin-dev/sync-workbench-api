@@ -1,18 +1,23 @@
 import { permissionsService } from "@/lib";
-import { permissionSchema } from "@/schemas/permission";
-import { idSchema } from "@/schemas/shared/id";
-import { validateSchemas } from "@/utils";
+import { requestMiddleware } from "@/middleware/request-middleware";
+import { PermissionSchemaType } from "@/schemas/permission";
+import { ParamsIdSchemaType } from "@/schemas/shared/id";
 import { NextFunction, Request, Response } from "express";
 
-const upsert = async (req: Request, res: Response, next: NextFunction) => {
+const upsert = async (
+  req: Request<ParamsIdSchemaType, {}, PermissionSchemaType>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const id = validateSchemas(req.params.id, idSchema);
-    const data = validateSchemas(req.body, permissionSchema);
+    const id = req.params.id;
+    const { action, resource, description } = req.body;
 
-    const { permission, statusCode } = await permissionsService.upsert(
-      id,
-      data
-    );
+    const { permission, statusCode } = await permissionsService.upsert(id, {
+      action,
+      resource,
+      description,
+    });
 
     res.status(statusCode).json({
       status: "success",
@@ -29,4 +34,4 @@ const upsert = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default upsert;
+export default requestMiddleware(upsert, { validation: {} });

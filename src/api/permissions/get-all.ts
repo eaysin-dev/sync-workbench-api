@@ -1,21 +1,26 @@
 import { permissionsService } from "@/lib";
+import { requestMiddleware } from "@/middleware/request-middleware";
 import {
   getAllQuerySchema,
   GetAllQuerySchemaType,
 } from "@/schemas/shared/get-all-queries";
-import { validateSchemas } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 
-const getAll = async (req: Request, res: Response, next: NextFunction) => {
+const getAll = async (
+  req: Request<{}, {}, {}, GetAllQuerySchemaType>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const queries = validateSchemas(
-      req.query,
-      getAllQuerySchema
-    ) as GetAllQuerySchemaType;
+    const { sort_by, limit, page, search, sort_type } = req.query;
 
-    const { permissions, pagination } = await permissionsService.getAll(
-      queries
-    );
+    const { permissions, pagination } = await permissionsService.getAll({
+      sort_by,
+      limit,
+      page,
+      search,
+      sort_type,
+    });
 
     res.status(200).json({
       status: "success",
@@ -30,4 +35,6 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default getAll;
+export default requestMiddleware(getAll, {
+  validation: { query: getAllQuerySchema },
+});

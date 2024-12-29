@@ -1,16 +1,57 @@
 import { employeeService } from "@/lib";
+import { requestMiddleware } from "@/middleware/request-middleware";
 import { employeeSchema, EmployeeSchemaType } from "@/schemas";
-import { validateSchemas } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 
-const create = async (req: Request, res: Response, next: NextFunction) => {
+const create = async (
+  req: Request<{}, {}, EmployeeSchemaType>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const data = validateSchemas(
-      req.body,
-      employeeSchema
-    ) as EmployeeSchemaType;
+    const {
+      address,
+      city,
+      country,
+      date_of_birth,
+      date_of_hire,
+      employment_status,
+      first_name,
+      last_name,
+      phone_number,
+      position,
+      salary,
+      state,
+      user,
+      zip_code,
+      certifications,
+      department,
+      job_title,
+      manager,
+      skills,
+    } = req.body;
 
-    const employee = await employeeService.create(data);
+    const employee = await employeeService.create({
+      address,
+      city,
+      country,
+      date_of_birth,
+      date_of_hire,
+      employment_status,
+      first_name,
+      last_name,
+      phone_number,
+      position,
+      salary,
+      state,
+      user,
+      zip_code,
+      certifications,
+      department,
+      job_title,
+      manager,
+      skills,
+    });
 
     const response = {
       status: "success",
@@ -26,4 +67,6 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default create;
+export default requestMiddleware(create, {
+  validation: { body: employeeSchema },
+});

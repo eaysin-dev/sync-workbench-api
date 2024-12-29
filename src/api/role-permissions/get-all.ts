@@ -1,14 +1,21 @@
 import { rolePermissionsService } from "@/lib";
-import { rolePermissionQuerySchema } from "@/schemas/role-permission";
-import { validateSchemas } from "@/utils";
+import { requestMiddleware } from "@/middleware/request-middleware";
+import {
+  rolePermissionQuerySchema,
+  RolePermissionQuerySchemaType,
+} from "@/schemas/role-permission";
 import { NextFunction, Request, Response } from "express";
 
-const getAll = async (req: Request, res: Response, next: NextFunction) => {
+const getAll = async (
+  req: Request<{}, {}, {}, RolePermissionQuerySchemaType>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const queries = validateSchemas(req.query, rolePermissionQuerySchema);
+    const { sort_by, limit, page, search, sort_type, populate } = req.query;
 
     const { rolePermissions, pagination } = await rolePermissionsService.getAll(
-      queries
+      { sort_by, limit, page, search, sort_type, populate }
     );
 
     res.status(200).json({
@@ -24,4 +31,6 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default getAll;
+export default requestMiddleware(getAll, {
+  validation: { query: rolePermissionQuerySchema },
+});

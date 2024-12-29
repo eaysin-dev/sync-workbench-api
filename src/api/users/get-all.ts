@@ -1,14 +1,16 @@
 import { userService } from "@/lib";
-import { usersGetAllQuerySchema } from "@/schemas";
-import { validateSchemas } from "@/utils";
+import { requestMiddleware } from "@/middleware/request-middleware";
+import { usersGetAllQuerySchema, UsersGetAllQuerySchemaType } from "@/schemas";
 import { NextFunction, Request, Response } from "express";
 
-const getAll = async (req: Request, res: Response, next: NextFunction) => {
+const getAll = async (
+  req: Request<{}, {}, {}, UsersGetAllQuerySchemaType>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { page, limit, sort_by, sort_type, search, role } = validateSchemas(
-      req.query,
-      usersGetAllQuerySchema
-    );
+    const { page, limit, sort_by, sort_type, search, role, populate } =
+      req.query;
 
     const { users, pagination } = await userService.getAll({
       page,
@@ -17,6 +19,7 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
       sort_type,
       search,
       role,
+      populate,
     });
 
     res.status(200).json({
@@ -32,4 +35,6 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default getAll;
+export default requestMiddleware(getAll, {
+  validation: { query: usersGetAllQuerySchema },
+});

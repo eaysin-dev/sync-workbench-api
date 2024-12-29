@@ -1,13 +1,14 @@
+import defaultConfig from "@/config/default";
 import { employeeService } from "@/lib";
-import { employeeGetByIdSchema } from "@/schemas/employee/get-by-id-queries";
-import { validateSchemas } from "@/utils";
+import { requestMiddleware } from "@/middleware/request-middleware";
+import { createPopulateSchema } from "@/schemas/shared/expend";
+import { idSchema } from "@/schemas/shared/id";
 import { NextFunction, Request, Response } from "express";
 
 const getById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const values = { id: req.params.id, populate: req.query.populate };
-    const validateData = validateSchemas(values, employeeGetByIdSchema);
-    const { id, populate } = validateData;
+    const { id, populate } = values;
 
     const { employee } = await employeeService.getById({ id, populate });
 
@@ -23,4 +24,9 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default getById;
+export default requestMiddleware(getById, {
+  validation: {
+    body: idSchema,
+    query: createPopulateSchema(defaultConfig.employeeExpendEnum).optional(),
+  },
+});

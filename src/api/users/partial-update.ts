@@ -1,22 +1,24 @@
 import { userService } from "@/lib";
+import { requestMiddleware } from "@/middleware/request-middleware";
 import { updateUserSchema, UpdateUserSchemaType } from "@/schemas";
-import { idSchema } from "@/schemas/shared/id";
-import { validateSchemas } from "@/utils";
+import { paramsIdSchema, ParamsIdSchemaType } from "@/schemas/shared/id";
 import { NextFunction, Request, Response } from "express";
 
 const partialUpdate = async (
-  req: Request,
+  req: Request<ParamsIdSchemaType, {}, UpdateUserSchemaType>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const id = validateSchemas(req.params.id, idSchema);
-    const data = validateSchemas(
-      req.body,
-      updateUserSchema
-    ) as UpdateUserSchemaType;
+    const id = req.params.id;
+    const { email, role, status, username } = req.body;
 
-    const user = await userService.partialUpdate(id, data);
+    const user = await userService.partialUpdate(id, {
+      email,
+      role,
+      status,
+      username,
+    });
 
     res.status(200).json({
       status: "success",
@@ -30,4 +32,6 @@ const partialUpdate = async (
   }
 };
 
-export default partialUpdate;
+export default requestMiddleware(partialUpdate, {
+  validation: { params: paramsIdSchema, body: updateUserSchema },
+});

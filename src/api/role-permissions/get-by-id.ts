@@ -1,13 +1,14 @@
 import { rolePermissionsService } from "@/lib";
-import { rolePermissionGetByIdSchema } from "@/schemas/role-permission";
-import { validateSchemas } from "@/utils";
+import { requestMiddleware } from "@/middleware/request-middleware";
+import { rolePermissionExpendEnum } from "@/schemas/role-permission";
+import { createPopulateSchema } from "@/schemas/shared/expend";
+import { paramsIdSchema } from "@/schemas/shared/id";
 import { NextFunction, Request, Response } from "express";
 
 const getById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const values = { id: req.params.id, populate: req.query.populate };
-    const validateData = validateSchemas(values, rolePermissionGetByIdSchema);
-    const { id, populate } = validateData;
+    const { id, populate } = values;
 
     const { rolePermission } = await rolePermissionsService.getById({
       id,
@@ -26,4 +27,9 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default getById;
+export default requestMiddleware(getById, {
+  validation: {
+    params: paramsIdSchema,
+    query: createPopulateSchema(rolePermissionExpendEnum).optional(),
+  },
+});

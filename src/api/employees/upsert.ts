@@ -1,16 +1,59 @@
 import { employeeService } from "@/lib";
-import { employeeSchema } from "@/schemas";
-import { EmployeeQueryType } from "@/schemas/employee/get-all-queries";
-import { idSchema } from "@/schemas/shared/id";
-import { validateSchemas } from "@/utils";
+import { requestMiddleware } from "@/middleware/request-middleware";
+import { employeeSchema, EmployeeSchemaType } from "@/schemas";
+import { paramsIdSchema, ParamsIdSchemaType } from "@/schemas/shared/id";
 import { NextFunction, Request, Response } from "express";
 
-const upsert = async (req: Request, res: Response, next: NextFunction) => {
+const upsert = async (
+  req: Request<ParamsIdSchemaType, {}, EmployeeSchemaType>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const id = validateSchemas(req.params.id, idSchema);
-    const data = validateSchemas(req.body, employeeSchema) as EmployeeQueryType;
+    const id = req.params.id;
+    const {
+      address,
+      city,
+      country,
+      date_of_birth,
+      date_of_hire,
+      employment_status,
+      first_name,
+      last_name,
+      phone_number,
+      position,
+      salary,
+      state,
+      user,
+      zip_code,
+      certifications,
+      department,
+      job_title,
+      manager,
+      skills,
+    } = req.body;
 
-    const { employee, statusCode } = await employeeService.upsert(id, data);
+    const { employee, statusCode } = await employeeService.upsert(id, {
+      address,
+      city,
+      country,
+      date_of_birth,
+      date_of_hire,
+      employment_status,
+      first_name,
+      last_name,
+      phone_number,
+      position,
+      salary,
+      state,
+      user,
+      zip_code,
+      certifications,
+      department,
+      job_title,
+      manager,
+      skills,
+    });
 
     res.status(statusCode).json({
       status: "success",
@@ -27,4 +70,6 @@ const upsert = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default upsert;
+export default requestMiddleware(upsert, {
+  validation: { params: paramsIdSchema, body: employeeSchema },
+});
