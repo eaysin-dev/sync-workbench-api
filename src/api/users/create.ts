@@ -1,13 +1,23 @@
 import { userService } from "@/lib";
+import { requestMiddleware } from "@/middleware/request-middleware";
 import { userSchema, UserSchemaType } from "@/schemas";
-import { validateSchemas } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 
-const create = async (req: Request, res: Response, next: NextFunction) => {
+const create = async (
+  req: Request<{}, {}, UserSchemaType>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const data = validateSchemas(req.body, userSchema) as UserSchemaType;
+    const { email, password, role, status, username } = req.body;
 
-    const user = await userService.createUser(data);
+    const user = await userService.createUser({
+      email,
+      password,
+      role,
+      status,
+      username,
+    });
 
     const response = {
       status: "success",
@@ -23,4 +33,4 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default create;
+export default requestMiddleware(create, { validation: { body: userSchema } });

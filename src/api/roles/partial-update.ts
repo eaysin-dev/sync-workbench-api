@@ -1,19 +1,19 @@
 import { rolesService } from "@/lib";
-import { roleSchema } from "@/schemas/role";
-import { idSchema } from "@/schemas/shared/id";
-import { validateSchemas } from "@/utils";
+import { requestMiddleware } from "@/middleware/request-middleware";
+import { roleSchema, RoleSchemaType } from "@/schemas/role";
+import { paramsIdSchema, ParamsIdSchemaType } from "@/schemas/shared/id";
 import { NextFunction, Request, Response } from "express";
 
 const partialUpdate = async (
-  req: Request,
+  req: Request<ParamsIdSchemaType, {}, RoleSchemaType>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const id = validateSchemas(req.params.id, idSchema);
-    const data = validateSchemas(req.body, roleSchema);
+    const id = req.params.id;
+    const { name, description } = req.body;
 
-    const role = await rolesService.partialUpdate(id, data);
+    const role = await rolesService.partialUpdate(id, { name, description });
 
     res.status(200).json({
       status: "success",
@@ -27,4 +27,6 @@ const partialUpdate = async (
   }
 };
 
-export default partialUpdate;
+export default requestMiddleware(partialUpdate, {
+  validation: { params: paramsIdSchema, body: roleSchema },
+});

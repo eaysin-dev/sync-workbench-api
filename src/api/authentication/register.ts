@@ -1,13 +1,15 @@
 import { authenticateService } from "@/lib";
-import { userSchema, UserSchemaType } from "@/schemas";
-import { validateSchemas } from "@/utils";
+import { requestMiddleware } from "@/middleware/request-middleware";
 import { NextFunction, Request, Response } from "express";
+import { userSchema, UserSchemaType } from "./../../schemas/user/index";
 
-const register = async (req: Request, res: Response, next: NextFunction) => {
+const register = async (
+  req: Request<{}, {}, UserSchemaType>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const data = validateSchemas(req.body, userSchema) as UserSchemaType;
-
-    const { username, password, email, role, status } = data;
+    const { username, password, email, role, status } = req.body;
 
     const { accessToken, refreshToken } = await authenticateService.register({
       email,
@@ -30,4 +32,6 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default register;
+export default requestMiddleware(register, {
+  validation: { body: userSchema },
+});

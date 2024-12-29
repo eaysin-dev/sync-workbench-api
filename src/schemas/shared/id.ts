@@ -6,3 +6,6 @@ export const idSchema = z
   .regex(/^[a-fA-F0-9]{24}$/, "Invalid id string");
 
 export type IdSchemaType = z.infer<typeof idSchema>;
+
+export const paramsIdSchema = z.object({ id: idSchema });
+export type ParamsIdSchemaType = z.infer<typeof paramsIdSchema>;

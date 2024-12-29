@@ -1,15 +1,25 @@
 import { userService } from "@/lib";
+import { requestMiddleware } from "@/middleware/request-middleware";
 import { userSchema, UserSchemaType } from "@/schemas";
-import { idSchema } from "@/schemas/shared/id";
-import { validateSchemas } from "@/utils";
+import { paramsIdSchema, ParamsIdSchemaType } from "@/schemas/shared/id";
 import { NextFunction, Request, Response } from "express";
 
-const upsert = async (req: Request, res: Response, next: NextFunction) => {
+const upsert = async (
+  req: Request<ParamsIdSchemaType, {}, UserSchemaType>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const id = validateSchemas(req.params.id, idSchema);
-    const data = validateSchemas(req.body, userSchema) as UserSchemaType;
+    const id = req.params.id;
+    const { email, password, role, status, username } = req.body;
 
-    const { user, statusCode } = await userService.upsert(id, data);
+    const { user, statusCode } = await userService.upsert(id, {
+      email,
+      password,
+      role,
+      status,
+      username,
+    });
 
     res.status(statusCode).json({
       status: "success",
@@ -26,4 +36,6 @@ const upsert = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default upsert;
+export default requestMiddleware(upsert, {
+  validation: { params: paramsIdSchema, body: userSchema },
+});

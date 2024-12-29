@@ -1,13 +1,23 @@
 import { rolePermissionsService } from "@/lib";
-import { rolePermissionSchema } from "@/schemas/role-permission";
-import { validateSchemas } from "@/utils";
+import { requestMiddleware } from "@/middleware/request-middleware";
+import {
+  rolePermissionSchema,
+  RolePermissionSchemaType,
+} from "@/schemas/role-permission";
 import { NextFunction, Request, Response } from "express";
 
-const create = async (req: Request, res: Response, next: NextFunction) => {
+const create = async (
+  req: Request<{}, {}, RolePermissionSchemaType>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const data = validateSchemas(req.body, rolePermissionSchema);
+    const { permission, role } = req.body;
 
-    const rolePermission = await rolePermissionsService.create(data);
+    const rolePermission = await rolePermissionsService.create({
+      permission,
+      role,
+    });
 
     const response = {
       status: "success",
@@ -23,4 +33,6 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default create;
+export default requestMiddleware(create, {
+  validation: { body: rolePermissionSchema },
+});

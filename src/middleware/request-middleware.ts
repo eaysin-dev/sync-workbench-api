@@ -1,62 +1,59 @@
+import { handleZodValidationError } from "@/utils/handle-zod-validation-error";
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import { ZodError } from "zod";
+import { ZodError, ZodSchema } from "zod";
 import logger from "../logger";
-import { ErrorDetails, ErrorResponse } from "../types/error";
-
-/**
- * Helper to get message from Zod errors
- * @param error Error from Zod
- * @returns Structured message for error
- */
-const getMessageFromZodError = (error: ZodError): string | undefined => {
-  if (error.issues && error.issues.length > 0) {
-    return error.issues
-      .map((issue) => {
-        return `PATH: [${issue.path}] ;; MESSAGE: ${issue.message}`;
-      })
-      .join(", ");
-  }
-  return error.message;
-};
 
 interface HandlerOptions {
   validation?: {
-    body?: any; // Zod schema
+    body?: ZodSchema;
+    query?: ZodSchema;
+    params?: ZodSchema;
   };
 }
 
-/**
- * This router wrapper catches any error from async await
- * and throws it to the default express error handler,
- * instead of crashing the app
- * @param handler Request handler to check for error
- */
 export const requestMiddleware =
-  (handler: RequestHandler, options?: HandlerOptions): RequestHandler =>
-  async (req: Request, res: Response, next: NextFunction) => {
+  <P = {}, ResBody = any, ReqBody = any, ReqQuery = any>(
+    handler: (
+      req: Request<P, ResBody, ReqBody, ReqQuery>,
+      res: Response,
+      next: NextFunction
+    ) => Promise<void> | void,
+    options?: HandlerOptions
+  ): RequestHandler<P, ResBody, ReqBody, ReqQuery> =>
+  async (req: Request<P, ResBody, ReqBody, ReqQuery>, res, next) => {
+    // Validate body if schema is provided
     if (options?.validation?.body) {
       try {
-        options.validation.body.parse(req.body); // Zod validation
+        options.validation.body.parse(req.body);
       } catch (error) {
         if (error instanceof ZodError) {
-          const errorDetails: ErrorDetails = {
-            code: "VALIDATION_ERROR",
-            message: error.message,
-            details: error.issues,
-            suggestion: "Please check your input data and try again.",
-          };
-
-          const errorResponse: ErrorResponse = {
-            status: "error",
-            statusCode: 400,
-            error: errorDetails,
-            timestamp: new Date().toISOString(),
-          };
-
-          res.status(400).json(errorResponse);
-          return;
+          return handleZodValidationError(error, res, "body");
         }
-        next(error); // For other types of errors
+        next(error);
+      }
+    }
+
+    // Validate query if schema is provided
+    if (options?.validation?.query) {
+      try {
+        options.validation.query.parse(req.query);
+      } catch (error) {
+        if (error instanceof ZodError) {
+          return handleZodValidationError(error, res, "query");
+        }
+        next(error);
+      }
+    }
+
+    // Validate params if schema is provided
+    if (options?.validation?.params) {
+      try {
+        options.validation.params.parse(req.params);
+      } catch (error) {
+        if (error instanceof ZodError) {
+          return handleZodValidationError(error, res, "params");
+        }
+        next(error);
       }
     }
 
@@ -73,5 +70,3 @@ export const requestMiddleware =
       next(err);
     }
   };
-
-export default requestMiddleware;

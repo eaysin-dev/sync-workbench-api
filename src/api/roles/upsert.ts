@@ -1,15 +1,22 @@
 import { rolesService } from "@/lib";
-import { roleSchema } from "@/schemas/role";
-import { idSchema } from "@/schemas/shared/id";
-import { validateSchemas } from "@/utils";
+import { requestMiddleware } from "@/middleware/request-middleware";
+import { roleSchema, RoleSchemaType } from "@/schemas/role";
+import { paramsIdSchema, ParamsIdSchemaType } from "@/schemas/shared/id";
 import { NextFunction, Request, Response } from "express";
 
-const upsert = async (req: Request, res: Response, next: NextFunction) => {
+const upsert = async (
+  req: Request<ParamsIdSchemaType, {}, RoleSchemaType>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const id = validateSchemas(req.params.id, idSchema);
-    const data = validateSchemas(req.body, roleSchema);
+    const id = req.params.id;
+    const { name, description } = req.body;
 
-    const { role, statusCode } = await rolesService.upsert(id, data);
+    const { role, statusCode } = await rolesService.upsert(id, {
+      name,
+      description,
+    });
 
     res.status(statusCode).json({
       status: "success",
@@ -26,4 +33,6 @@ const upsert = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default upsert;
+export default requestMiddleware(upsert, {
+  validation: { params: paramsIdSchema, body: roleSchema },
+});

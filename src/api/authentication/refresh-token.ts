@@ -1,23 +1,22 @@
 import { authenticateService } from "@/lib";
-import { badRequest, generateErrorResponse } from "@/utils";
-import { NextFunction, Request, Response } from "express";
+import { requestMiddleware } from "@/middleware/request-middleware";
+import { NextFunction, Request, RequestHandler, Response } from "express";
+import { z } from "zod";
 
-const refreshToken = async (
-  req: Request,
+const refreshTokenSchema = z.object({
+  refreshToken: z.string().min(1, { message: "Refresh token is required" }),
+});
+
+type RefreshTokenReqBody = z.infer<typeof refreshTokenSchema>;
+
+const refreshToken: RequestHandler = async (
+  req: Request<{}, {}, RefreshTokenReqBody>,
   res: Response,
   next: NextFunction
 ) => {
-  const { refreshToken: token } = req.body;
-
-  if (!refreshToken) {
-    const errorResponse = {
-      ...badRequest,
-      message: "Access denied. No token provided.",
-    };
-    throw generateErrorResponse(errorResponse);
-  }
-
   try {
+    const { refreshToken: token } = req.body;
+
     const { accessToken, refreshToken } =
       await authenticateService.refreshToken(token);
 
@@ -35,4 +34,6 @@ const refreshToken = async (
   }
 };
 
-export default refreshToken;
+export default requestMiddleware(refreshToken, {
+  validation: { body: refreshTokenSchema },
+});

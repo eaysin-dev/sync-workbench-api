@@ -1,13 +1,14 @@
+import defaultConfig from "@/config/default";
 import { userService } from "@/lib";
-import { userGetByIdSchema } from "@/schemas";
-import { validateSchemas } from "@/utils";
+import { requestMiddleware } from "@/middleware/request-middleware";
+import { createPopulateSchema } from "@/schemas/shared/expend";
+import { paramsIdSchema } from "@/schemas/shared/id";
 import { NextFunction, Request, Response } from "express";
 
 const getById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const values = { id: req.params.id, populate: req.query.populate };
-    const validateData = validateSchemas(values, userGetByIdSchema);
-    const { id, populate } = validateData;
+    const { id, populate } = values;
 
     const { user } = await userService.getById({ id, populate });
 
@@ -23,4 +24,11 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default getById;
+export default requestMiddleware(getById, {
+  validation: {
+    params: paramsIdSchema,
+    query: createPopulateSchema(
+      defaultConfig.allowedUserPopulateFields
+    ).optional(),
+  },
+});

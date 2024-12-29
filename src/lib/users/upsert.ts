@@ -1,9 +1,9 @@
 import User from "@/models/User";
-import { updateUserSchema, UpdateUserSchemaType } from "@/schemas";
+import { updateUserSchema, UserSchemaType } from "@/schemas";
 import { idSchema, IdSchemaType } from "@/schemas/shared/id";
 import { validateSchemas } from "@/utils";
 
-const upsert = async (identity: IdSchemaType, data: UpdateUserSchemaType) => {
+const upsert = async (identity: IdSchemaType, data: UserSchemaType) => {
   const id = validateSchemas(identity, idSchema);
   const userData = validateSchemas(data, updateUserSchema);
 

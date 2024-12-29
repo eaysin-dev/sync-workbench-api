@@ -1,19 +1,27 @@
 import { employeeService } from "@/lib";
+import { requestMiddleware } from "@/middleware/request-middleware";
 import {
   employeeQuerySchema,
   EmployeeQueryType,
 } from "@/schemas/employee/get-all-queries";
-import { validateSchemas } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 
-const getAll = async (req: Request, res: Response, next: NextFunction) => {
+const getAll = async (
+  req: Request<{}, {}, {}, EmployeeQueryType>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const queries = validateSchemas(
-      req.query,
-      employeeQuerySchema
-    ) as EmployeeQueryType;
+    const { populate, page, limit, sort_by, sort_type, search } = req.query;
 
-    const { employees, pagination } = await employeeService.getAll(queries);
+    const { employees, pagination } = await employeeService.getAll({
+      populate,
+      page,
+      limit,
+      sort_by,
+      sort_type,
+      search,
+    });
 
     res.status(200).json({
       status: "success",
@@ -28,4 +36,6 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default getAll;
+export default requestMiddleware(getAll, {
+  validation: { query: employeeQuerySchema },
+});

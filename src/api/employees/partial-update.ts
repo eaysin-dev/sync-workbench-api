@@ -1,20 +1,59 @@
 import { employeeService } from "@/lib";
-import { employeeSchema } from "@/schemas";
-import { EmployeeQueryType } from "@/schemas/employee/get-all-queries";
-import { idSchema } from "@/schemas/shared/id";
-import { validateSchemas } from "@/utils";
+import { requestMiddleware } from "@/middleware/request-middleware";
+import { employeeSchema, EmployeeSchemaType } from "@/schemas";
 import { NextFunction, Request, Response } from "express";
+import { paramsIdSchema, ParamsIdSchemaType } from "./../../schemas/shared/id";
 
 const partialUpdate = async (
-  req: Request,
+  req: Request<ParamsIdSchemaType, {}, EmployeeSchemaType>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const id = validateSchemas(req.params.id, idSchema);
-    const data = validateSchemas(req.body, employeeSchema) as EmployeeQueryType;
+    const id = req.params.id;
+    const {
+      address,
+      city,
+      country,
+      date_of_birth,
+      date_of_hire,
+      employment_status,
+      first_name,
+      last_name,
+      phone_number,
+      position,
+      salary,
+      state,
+      user,
+      zip_code,
+      certifications,
+      department,
+      job_title,
+      manager,
+      skills,
+    } = req.body;
 
-    const employee = await employeeService.partialUpdate(id, data);
+    const employee = await employeeService.partialUpdate(id, {
+      address,
+      city,
+      country,
+      date_of_birth,
+      date_of_hire,
+      employment_status,
+      first_name,
+      last_name,
+      phone_number,
+      position,
+      salary,
+      state,
+      user,
+      zip_code,
+      certifications,
+      department,
+      job_title,
+      manager,
+      skills,
+    });
 
     res.status(200).json({
       status: "success",
@@ -28,4 +67,6 @@ const partialUpdate = async (
   }
 };
 
-export default partialUpdate;
+export default requestMiddleware(partialUpdate, {
+  validation: { params: paramsIdSchema, body: employeeSchema },
+});
