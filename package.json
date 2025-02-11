@@ -4,7 +4,7 @@
   "description": "Sync-Workbench is a powerful workforce management solution designed to streamline and optimize employee operations.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/eaysin-arafat/sync-workbench-api.git"
+    "url": "git+https://github.com/eaysin-dev/sync-workbench-api.git"
   },
   "keywords": [
     "hr",
@@ -16,8 +16,6 @@
     "@": "dist"
   },
   "scripts": {
-    "postinstall": "chmod +x ./scripts/dev.sh",
-    "setup-actions": "chmod +x ./scripts/setup-github-actions.sh; ./scripts/setup-github-actions.sh",
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "dev": "nodemon -r tsconfig-paths/register src/index.ts",
     "dev-server": "NODE_ENV=development nodemon",
@@ -78,7 +76,7 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/eaysin-arafat/sync-workbench-api.git/issues"
+    "url": "https://github.com/eaysin-dev/sync-workbench-api.git/issues"
   },
-  "homepage": "https://github.com/eaysin-arafat/sync-workbench-api.git#readme"
+  "homepage": "https://github.com/eaysin-dev/sync-workbench-api.git#readme"
 }

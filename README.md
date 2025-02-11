@@ -29,14 +29,15 @@ Sync-Workbench is a powerful workforce management solution designed to streamlin
 **Using `curl`**
 
 ```bash
-<(curl -s https://raw.githubusercontent.com/eaysin-arafat/sync-workbench-api/main/scripts/setup.sh)
+<(curl -s https://raw.githubusercontent.com/eaysin-dev/sync-workbench-api/main/scripts/setup.sh)
 ```
 
 **Manual Method**
+
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/eaysin-arafat/sync-workbench-api.git
+   git clone https://github.com/eaysin-dev/sync-workbench-api.git
    cd sync-workbench-api
    ```
 
