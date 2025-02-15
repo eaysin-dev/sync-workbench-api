@@ -115,7 +115,7 @@ Below are the available environment variables and their descriptions:
 | -------------------------- | ------ | ---------------------------------------------------------- | -------------------------------------------------------- |
 | `NODE_ENV`                 | string | `development`                                              | API runtime environment (e.g., `staging`, `production`). |
 | `PORT`                     | number | `3000`                                                     | The port on which the API server runs.                   |
-| `DB_CONNECTION_URL`        | string | `mongodb+srv://eaysinarafat:password@cluster.mongodb.net/` | MongoDB connection string.                               |
+| `DB_CONNECTION_URL`        | string | `mongodb+srv://username:password@cluster.mongodb.net/` | MongoDB connection string.                               |
 | `DB_USERNAME`              | string | `eaysinarafat`                                             | Username for MongoDB authentication.                     |
 | `DB_PASSWORD`              | string | `password`                                                 | Password for MongoDB authentication.                     |
 | `APPLICATION_NAME`         | string | `sync-workbench`                                           | Name of the application.                                 |
