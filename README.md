@@ -111,18 +111,18 @@ To configure the application, create a `.env` file in the root directory and cop
 
 Below are the available environment variables and their descriptions:
 
-| Variable Name              | Type   | Default Value                                              | Description                                              |
-| -------------------------- | ------ | ---------------------------------------------------------- | -------------------------------------------------------- |
-| `NODE_ENV`                 | string | `development`                                              | API runtime environment (e.g., `staging`, `production`). |
-| `PORT`                     | number | `3000`                                                     | The port on which the API server runs.                   |
-| `DB_CONNECTION_URL`        | string | `mongodb+srv://username:password@cluster.mongodb.net/` | MongoDB connection string.                               |
-| `DB_USERNAME`              | string | `eaysinarafat`                                             | Username for MongoDB authentication.                     |
-| `DB_PASSWORD`              | string | `password`                                                 | Password for MongoDB authentication.                     |
-| `APPLICATION_NAME`         | string | `sync-workbench`                                           | Name of the application.                                 |
-| `ACCESS_TOKEN_SECRET`      | string | `your-access-token-secret`                                 | Secret key used for signing JWT access tokens.           |
-| `REFRESH_TOKEN_SECRET`     | string | `your-refresh-token-secret`                                | Secret key used for signing JWT refresh tokens.          |
-| `ACCESS_TOKEN_EXPIRATION`  | string | `15m`                                                      | Expiration time for access tokens (e.g., `15m`, `1h`).   |
-| `REFRESH_TOKEN_EXPIRATION` | string | `7d`                                                       | Expiration time for refresh tokens (e.g., `7d`).         |
+| Variable Name              | Type   | Default Value               | Description                                              |
+| -------------------------- | ------ | --------------------------- | -------------------------------------------------------- |
+| `NODE_ENV`                 | string | `development`               | API runtime environment (e.g., `staging`, `production`). |
+| `PORT`                     | number | `3000`                      | The port on which the API server runs.                   |
+| `DB_CONNECTION_URL`        | string | `db connection url`         | MongoDB connection string.                               |
+| `DB_USERNAME`              | string | `eaysinarafat`              | Username for MongoDB authentication.                     |
+| `DB_PASSWORD`              | string | `password`                  | Password for MongoDB authentication.                     |
+| `APPLICATION_NAME`         | string | `sync-workbench`            | Name of the application.                                 |
+| `ACCESS_TOKEN_SECRET`      | string | `your-access-token-secret`  | Secret key used for signing JWT access tokens.           |
+| `REFRESH_TOKEN_SECRET`     | string | `your-refresh-token-secret` | Secret key used for signing JWT refresh tokens.          |
+| `ACCESS_TOKEN_EXPIRATION`  | string | `15m`                       | Expiration time for access tokens (e.g., `15m`, `1h`).   |
+| `REFRESH_TOKEN_EXPIRATION` | string | `7d`                        | Expiration time for refresh tokens (e.g., `7d`).         |
 
 ### Notes:
 
